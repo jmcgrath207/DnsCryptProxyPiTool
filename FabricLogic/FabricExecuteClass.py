@@ -19,3 +19,6 @@ class FabricExecuteClass(FabricCommandClass):
 
     def ExecuteBuildDNSCrypt(self):
         execute(self.CommandBuildDNSCrypt, host=self.host)
+
+    def ExecuteAddDnsCryptUser(self):
+        execute(self.CommandAddDnsCryptUser, host=self.host)

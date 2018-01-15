@@ -11,6 +11,8 @@ Fec = FabricExecuteClass.FabricExecuteClass()
 
 Fec.ExecuteBuildDNSCrypt()
 
+Fec.ExecuteAddDnsCryptUser()
+
 
 
 
