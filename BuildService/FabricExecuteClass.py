@@ -1,5 +1,5 @@
-from FabricLogic.FabricCommandClass import FabricCommandClass
-from FabricLogic import host,  password, user,DnsCryptDownloadLink, DnsCryptExractDir
+from BuildService.FabricCommandClass import FabricCommandClass
+from BuildService import host,  password, user,DnsCryptDownloadLink, DnsCryptExractDir
 from fabric.context_managers import env
 from fabric.tasks import execute
 

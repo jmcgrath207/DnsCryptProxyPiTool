@@ -1,5 +1,5 @@
 
-from FabricLogic import FabricExecuteClass
+from BuildService import FabricExecuteClass
 
 
 Fec = FabricExecuteClass.FabricExecuteClass(DnsCryptDownloadLink="something")
