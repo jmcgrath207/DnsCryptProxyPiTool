@@ -1,4 +1,5 @@
 from FabricLogic.FabricCommandClass import FabricCommandClass
+from FabricLogic import host,  password, user,DnsCryptDownloadLink
 from fabric.context_managers import env
 from fabric.tasks import execute
 
@@ -6,10 +7,12 @@ from fabric.tasks import execute
 class FabricExecuteClass(FabricCommandClass):
 
 
-    def __init__(self,user: str = 'pi', password: str ='raspberry', host='localhost'):
+    def __init__(self,user: str = user, password: str = password,
+                 host: str = host,DnsCryptDownloadLink: str = DnsCryptDownloadLink):
         env.user = user
         env.password = password
         self.host = host
+        super().__init__(DnsCryptDownloadLink =DnsCryptDownloadLink)
 
 
 

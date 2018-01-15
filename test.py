@@ -2,12 +2,12 @@
 from FabricLogic import FabricExecuteClass
 
 
-Fec = FabricExecuteClass.FabricExecuteClass()
+Fec = FabricExecuteClass.FabricExecuteClass(DnsCryptDownloadLink="something")
 
 
 
 
-#Fec.ExecuteSystemPackages()
+Fec.ExecuteSystemPackages()
 
 Fec.ExecuteBuildDNSCrypt()
 

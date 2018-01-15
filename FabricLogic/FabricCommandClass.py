@@ -6,12 +6,19 @@ from fabric.api import sudo, cd, run
 class FabricCommandClass(object):
 
 
+    def __init__(self, DnsCryptDownloadLink: str):
+        self.DnsCryptDownloadLink = DnsCryptDownloadLink
+
+
 
 
     def CommandSystemPackages(self):
-        sudo('sudo apt-get update')
-        sudo('apt-get -y install build-essential tcpdump dnsutils libsodium-dev \
-             locate bash-completion libsystemd-dev pkg-config')
+        requiredPackages = "build-essential tcpdump dnsutils libsodium-dev locate " \
+                           "bash-completion libsystemd-dev pkg-config"
+        returnCode = run("dpkg -l " + requiredPackages)
+        if(returnCode.failed):
+            sudo('sudo apt-get update')
+            sudo('apt-get -y install ' + requiredPackages)
 
 
 
@@ -20,7 +27,7 @@ class FabricCommandClass(object):
         returnCode = run("which dnscrypt-proxy")
         if(returnCode.failed):
             with cd("/tmp"):
-                run('wget https://launchpad.net/ubuntu/+archive/primary/+files/dnscrypt-proxy_1.9.5.orig.tar.gz')
+                run('wget' + self.DnsCryptDownloadLink)
                 run('tar -xf dnscrypt*.tar.gz')
             with cd("/tmp/dnscrypt*/"):
                 sudo("ldconfig")
