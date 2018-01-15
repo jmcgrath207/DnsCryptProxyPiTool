@@ -1,5 +1,6 @@
-from BuildService.FabricCommandClass import FabricCommandClass
-from BuildService import host,  password, user,DnsCryptDownloadLink, DnsCryptExractDir
+from FabricService.FabricCommandClass import FabricCommandClass
+from FabricService import host,  password, user,DnsCryptDownloadLink,\
+    DnsCryptExractDir,DnsCryptResolverCsvLink, DnsCryptResolverDir
 from fabric.context_managers import env
 from fabric.tasks import execute
 
@@ -14,7 +15,9 @@ class FabricExecuteClass(FabricCommandClass):
         env.password = password
         self.host = host
         super().__init__(DnsCryptDownloadLink=DnsCryptDownloadLink,
-                         DnsCryptExractDir=DnsCryptExractDir)
+                         DnsCryptExractDir=DnsCryptExractDir,
+                         DnsCryptResolverCsvLink=DnsCryptResolverCsvLink,
+                         DnsCryptResolverDir=DnsCryptResolverDir)
 
 
 
@@ -27,3 +30,6 @@ class FabricExecuteClass(FabricCommandClass):
 
     def ExecuteAddDnsCryptUser(self):
         execute(self.CommandAddDnsCryptUser, host=self.host)
+
+    def ExecuteUpdateDnsCryptResolvers(self):
+        execute(self.CommandUpdateDnsCryptResolvers, host=self.host)

@@ -1,5 +1,5 @@
 
-from BuildService import FabricExecuteClass
+from FabricService import FabricExecuteClass
 
 
 Fec = FabricExecuteClass.FabricExecuteClass(DnsCryptDownloadLink="something")
@@ -13,6 +13,7 @@ Fec.ExecuteBuildDNSCrypt()
 
 Fec.ExecuteAddDnsCryptUser()
 
+Fec.ExecuteUpdateDnsCryptResolvers()
 
 
 

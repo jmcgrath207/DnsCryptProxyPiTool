@@ -6,9 +6,12 @@ from fabric.api import sudo, cd, run
 class FabricCommandClass(object):
 
 
-    def __init__(self, DnsCryptDownloadLink: str, DnsCryptExractDir: str):
+    def __init__(self, DnsCryptDownloadLink: str, DnsCryptExractDir: str,
+                 DnsCryptResolverCsvLink: str, DnsCryptResolverDir: str):
         self.DnsCryptDownloadLink = DnsCryptDownloadLink
         self.DnsCryptExractDir = DnsCryptExractDir
+        self.DnsCryptResolverCsvLink = DnsCryptResolverCsvLink
+        self.DnsCryptResolverDir = DnsCryptResolverDir
 
 
 
@@ -41,3 +44,9 @@ class FabricCommandClass(object):
         returnCode = run("id -u dnscrypt")
         if(returnCode.failed):
             sudo("useradd -r -d /var/dnscrypt -m -s /usr/sbin/nologin dnscrypt")
+
+
+    def CommandUpdateDnsCryptResolvers(self):
+        with cd(self.DnsCryptResolverDir):
+            sudo("wget -N " + self.DnsCryptResolverCsvLink)
+
