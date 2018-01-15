@@ -6,8 +6,9 @@ from fabric.api import sudo, cd, run
 class FabricCommandClass(object):
 
 
-    def __init__(self, DnsCryptDownloadLink: str):
+    def __init__(self, DnsCryptDownloadLink: str, DnsCryptExractDir: str):
         self.DnsCryptDownloadLink = DnsCryptDownloadLink
+        self.DnsCryptExractDir = DnsCryptExractDir
 
 
 
@@ -26,10 +27,10 @@ class FabricCommandClass(object):
 
         returnCode = run("which dnscrypt-proxy")
         if(returnCode.failed):
-            with cd("/tmp"):
+            with cd(self.DnsCryptExractDir):
                 run('wget' + self.DnsCryptDownloadLink)
                 run('tar -xf dnscrypt*.tar.gz')
-            with cd("/tmp/dnscrypt*/"):
+            with cd(self.DnsCryptExractDir + "/dnscrypt*/"):
                 sudo("ldconfig")
                 run("./configure --with-systemd")
                 run("make")
