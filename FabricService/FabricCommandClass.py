@@ -1,9 +1,9 @@
 from fabric.api import sudo, cd, run
+from CsvService.CsvClass import CsvClass
 
 
 
-
-class FabricCommandClass(object):
+class FabricCommandClass(CsvClass):
 
 
     def __init__(self, DnsCryptDownloadLink: str, DnsCryptExractDir: str,
@@ -12,13 +12,14 @@ class FabricCommandClass(object):
         self.DnsCryptExractDir = DnsCryptExractDir
         self.DnsCryptResolverCsvLink = DnsCryptResolverCsvLink
         self.DnsCryptResolverDir = DnsCryptResolverDir
+        super().__init__(DnsCryptResolverDir=DnsCryptResolverDir)
 
 
 
 
     def CommandSystemPackages(self):
         requiredPackages = "build-essential tcpdump dnsutils libsodium-dev locate " \
-                           "bash-completion libsystemd-dev pkg-config"
+                           "bash-completion libsystemd-dev pkg-config python3-dev"
         returnCode = run("dpkg -l " + requiredPackages)
         if(returnCode.failed):
             sudo('sudo apt-get update')
@@ -49,4 +50,9 @@ class FabricCommandClass(object):
     def CommandUpdateDnsCryptResolvers(self):
         with cd(self.DnsCryptResolverDir):
             sudo("wget -N " + self.DnsCryptResolverCsvLink)
+
+
+    def CommandCreateDNSCryptProxy(self):
+        AvaibleProxies = self.GetDnsCryptProxyNames()
+        print("hello")
 

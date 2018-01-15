@@ -13,7 +13,7 @@ Fec.ExecuteBuildDNSCrypt()
 
 Fec.ExecuteAddDnsCryptUser()
 
-Fec.ExecuteUpdateDnsCryptResolvers()
+#Fec.ExecuteUpdateDnsCryptResolvers()
 
 
-
+Fec.ExecuteCreateDNSCryptProxy()

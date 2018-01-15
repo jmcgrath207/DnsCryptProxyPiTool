@@ -10,7 +10,7 @@ class FabricExecuteClass(FabricCommandClass):
 
     def __init__(self,user: str = user, password: str = password,
                  host: str = host,DnsCryptDownloadLink: str = DnsCryptDownloadLink,
-                 DnsCryptExractDir: str = DnsCryptExractDir):
+                 DnsCryptExractDir: str = DnsCryptExractDir, ):
         env.user = user
         env.password = password
         self.host = host
@@ -33,3 +33,6 @@ class FabricExecuteClass(FabricCommandClass):
 
     def ExecuteUpdateDnsCryptResolvers(self):
         execute(self.CommandUpdateDnsCryptResolvers, host=self.host)
+
+    def ExecuteCreateDNSCryptProxy(self):
+        execute(self.CommandCreateDNSCryptProxy, host=self.host)
