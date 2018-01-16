@@ -1,9 +1,9 @@
 from fabric.api import sudo, cd, run
-from fabric.contrib.files import append as fabappend
+from fabric.contrib.files import append as fabappend, exists
 import re
 import ipaddress
 from CsvService.CsvClass import CsvClass
-from FabricService.StringContainer import DnsCryptService
+from FabricService.StringContainer import DnsCryptService, DnsCryptSocket
 
 
 
@@ -26,7 +26,7 @@ class FabricCommandClass(CsvClass):
 
     def CommandSystemPackages(self):
         requiredPackages = "build-essential tcpdump dnsutils libsodium-dev locate " \
-                           "bash-completion libsystemd-dev pkg-config python3-dev"
+                           "bash-completion libsystemd-dev pkg-config python3-dev rng-tools"
         returnCode = run("dpkg -l " + requiredPackages)
         if(returnCode.failed):
             sudo('sudo apt-get update')
@@ -40,12 +40,14 @@ class FabricCommandClass(CsvClass):
         if(returnCode.failed):
             with cd(self.DnsCryptExractDir):
                 run('wget' + self.DnsCryptDownloadLink)
-                run('tar -xf dnscrypt*.tar.gz')
-            with cd(self.DnsCryptExractDir + "/dnscrypt*/"):
+                run('tar -xf dnscrypt*.tar.gz -C dnscryptBuild --strip-components=1')
+            with cd(self.DnsCryptExractDir + "/dnscryptBuild/"):
                 sudo("ldconfig")
                 run("./configure --with-systemd")
                 run("make")
                 sudo("make install")
+        else:
+            run("mkdir -p " + self.DnsCryptExractDir + "/dnscryptBuild/")
 
     def CommandAddDnsCryptUser(self):
 
@@ -69,8 +71,11 @@ class FabricCommandClass(CsvClass):
         runningSockets = sudo("ss -nlut | awk 'NR>1 {print  $5}'")
         runningSockets = re.sub(r".*[a-zA-Z]+\S","",runningSockets).split()
         for name in self.DnsCryptResolverNames:
-            with cd(self.DnsCryptExractDir + "/dnscrypt*/"):
-                run("cp dnscrypt-proxy.socket dnscrypt-proxy@" + name + ".socket")
+            with cd(self.DnsCryptExractDir + "/dnscryptBuild/"):
+                if(exists("dnscrypt-proxy.socket")):
+                    run("rm dnscrypt-proxy.socket")
+                fabappend('dnscrypt-proxy.socket', DnsCryptSocket)
+                run("cp dnscrypt-proxy.socket " "dnscrypt-proxy@" + name + ".socket")
                 while True:
                     if self.LoopBackStartAddress + ":41" not in runningSockets:
                         run("sed -i 's/127.0.0.1:53/" + self.LoopBackStartAddress + ":41/g' dnscrypt-proxy@" + name + ".socket")
@@ -81,10 +86,16 @@ class FabricCommandClass(CsvClass):
                     if self.LoopBackStartAddress == '127.255.255.254':
                         raise ValueError("No Ip address available in the 127.0.0.0/8 IPV4 Range")
 
-        with cd(self.DnsCryptExractDir + "/dnscrypt*/"):
-            FinalDnsCryptService = DnsCryptService.format("\n".join(socketFiles))
-            fabappend('dnscrypt-proxy@.service',FinalDnsCryptService)
-            print("hello")
+        with cd(self.DnsCryptExractDir + "/dnscryptBuild/"):
+            #FinalDnsCryptService = DnsCryptService.format("\n".join(socketFiles))
+            if (exists("dnscrypt-proxy@.service")):
+                run("rm dnscrypt-proxy@.service")
+            fabappend('dnscrypt-proxy@.service',DnsCryptService)
+            sudo("cp ./dnscrypt-proxy@* /etc/systemd/system/.")
+        sudo("systemctl daemon-reload")
+        #sudo("systemctl enable dnscrypt-proxy@.service")
+        for name in self.DnsCryptResolverNames:
+            sudo("")
 
 
 

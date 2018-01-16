@@ -1,0 +1,50 @@
+
+
+
+
+### Show
+
+sudo systemctl status -l dnscrypt-proxy@\*
+
+ps ax | grep dnscrypt
+
+
+/etc/systemd/system/multi-user.target.wants/dnscrypt-proxy@d0wn-random-ns2.service
+/etc/systemd/system/sockets.target.wants/dnscrypt-proxy@d0wn-random-ns2.socket.
+
+
+## Remove Service
+
+
+sudo systemctl stop dnscrypt-proxy@\*
+sudo systemctl disable dnscrypt-proxy@\*
+
+sudo rm /etc/systemd/system/multi-user.target.wants/dnscrypt-proxy*
+sudo rm /etc/systemd/system/sockets.target.wants/dnscrypt-proxy*
+sudo rm /etc/systemd/system/dnscrypt-proxy*
+sudo systemctl daemon-reload
+sudo systemctl reset-failed
+
+
+
+
+
+
+
+
+### Enable Service
+
+
+
+
+sudo systemctl enable dnscrypt-proxy@d0wn-random-ns1.socket
+sudo systemctl enable dnscrypt-proxy@d0wn-random-ns1.service
+sudo systemctl start dnscrypt-proxy@d0wn-random-ns1.service
+sudo systemctl start dnscrypt-proxy@d0wn-random-ns1.socket
+
+
+
+sudo systemctl enable dnscrypt-proxy@d0wn-random-ns2.socket
+sudo systemctl enable dnscrypt-proxy@d0wn-random-ns2.service
+sudo systemctl start dnscrypt-proxy@d0wn-random-ns2.socket
+sudo systemctl start dnscrypt-proxy@d0wn-random-ns2.service
