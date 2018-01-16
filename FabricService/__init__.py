@@ -9,3 +9,4 @@ DnsCryptDownloadLink = "https://launchpad.net/ubuntu/+archive/primary/+files/dns
 DnsCryptResolverCsvLink = "https://raw.githubusercontent.com/dyne/dnscrypt-proxy/master/dnscrypt-resolvers.csv"
 DnsCryptResolverDir = "/usr/local/share/dnscrypt-proxy"
 DnsCryptResolverNames =['d0wn-random-ns1','d0wn-random-ns2']
+LoopBackStartAddress = "127.10.10.1"

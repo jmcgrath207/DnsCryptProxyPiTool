@@ -7,13 +7,13 @@ Fec = FabricExecuteClass.FabricExecuteClass(DnsCryptDownloadLink="something")
 
 
 
-Fec.ExecuteSystemPackages()
-
-Fec.ExecuteBuildDNSCrypt()
-
-Fec.ExecuteAddDnsCryptUser()
+#Fec.ExecuteSystemPackages()
+#
+#Fec.ExecuteBuildDNSCrypt()
+#
+#Fec.ExecuteAddDnsCryptUser()
 
 #Fec.ExecuteUpdateDnsCryptResolvers()
 
 
-Fec.ExecuteCreateDNSCryptProxy()
+Fec.ExecuteCreateDNSCryptProxies()

@@ -18,5 +18,4 @@ class CsvClass(object):
             resolverNameList = [resolverList[resolverList.index(row)][0] for row in resolverList]
             f.close()
 
-            print("hello")
         return resolverNameList
