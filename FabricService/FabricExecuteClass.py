@@ -12,7 +12,6 @@ class FabricExecuteClass(FabricCommandClass):
     def __init__(self,user: str = user, password: str = password,
                  host: str = host,DnsCryptDownloadLink: str = DnsCryptDownloadLink,
                  DnsCryptExractDir: str = DnsCryptExractDir,
-                 DnsCryptResolverNames: list = DnsCryptResolverNames,
                  LoopBackStartAddress: str = LoopBackStartAddress):
         env.user = user
         env.password = password
@@ -21,7 +20,6 @@ class FabricExecuteClass(FabricCommandClass):
                          DnsCryptExractDir=DnsCryptExractDir,
                          DnsCryptResolverCsvLink=DnsCryptResolverCsvLink,
                          DnsCryptResolverDir=DnsCryptResolverDir,
-                         DnsCryptResolverNames=DnsCryptResolverNames,
                          LoopBackStartAddress=LoopBackStartAddress)
 
 
@@ -40,4 +38,5 @@ class FabricExecuteClass(FabricCommandClass):
         execute(self.CommandUpdateDnsCryptResolvers, host=self.host)
 
     def ExecuteCreateDNSCryptProxies(self):
+        FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverNames = DnsCryptResolverNames
         execute(self.CommandCreateDNSCryptProxies, host=self.host)

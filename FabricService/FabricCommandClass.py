@@ -12,12 +12,11 @@ class FabricCommandClass(CsvClass):
 
     def __init__(self, DnsCryptDownloadLink: str, DnsCryptExractDir: str,
                  DnsCryptResolverCsvLink: str, DnsCryptResolverDir: str,
-                 DnsCryptResolverNames: list, LoopBackStartAddress: str):
+                 LoopBackStartAddress: str):
         self.DnsCryptDownloadLink = DnsCryptDownloadLink
         self.DnsCryptExractDir = DnsCryptExractDir
         self.DnsCryptResolverCsvLink = DnsCryptResolverCsvLink
         self.DnsCryptResolverDir = DnsCryptResolverDir
-        self.DnsCryptResolverNames = DnsCryptResolverNames
         self.LoopBackStartAddress = LoopBackStartAddress
         super().__init__(DnsCryptResolverDir=DnsCryptResolverDir)
 
@@ -63,14 +62,15 @@ class FabricCommandClass(CsvClass):
 
     def CommandCreateDNSCryptProxies(self):
         AvailableResolvers = self.GetDnsCryptProxyNames()
-        for name in self.DnsCryptResolverNames:
+        DnsCryptResolverNames = FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverNames
+        for name in DnsCryptResolverNames:
             if name not in AvailableResolvers:
                 raise ValueError(name + ' Is not a Vaild Resolver Name. Please Check ' + self.DnsCryptResolverCsvLink + ' to ensure the name is correct')
 
         socketFiles = []
         runningSockets = sudo("ss -nlut | awk 'NR>1 {print  $5}'")
         runningSockets = re.sub(r".*[a-zA-Z]+\S","",runningSockets).split()
-        for name in self.DnsCryptResolverNames:
+        for name in DnsCryptResolverNames:
             with cd(self.DnsCryptExractDir + "/dnscryptBuild/"):
                 if(exists("dnscrypt-proxy.socket")):
                     run("rm dnscrypt-proxy.socket")
@@ -87,14 +87,12 @@ class FabricCommandClass(CsvClass):
                         raise ValueError("No Ip address available in the 127.0.0.0/8 IPV4 Range")
 
         with cd(self.DnsCryptExractDir + "/dnscryptBuild/"):
-            #FinalDnsCryptService = DnsCryptService.format("\n".join(socketFiles))
             if (exists("dnscrypt-proxy@.service")):
                 run("rm dnscrypt-proxy@.service")
             fabappend('dnscrypt-proxy@.service',DnsCryptService)
             sudo("cp ./dnscrypt-proxy@* /etc/systemd/system/.")
         sudo("systemctl daemon-reload")
-        #sudo("systemctl enable dnscrypt-proxy@.service")
-        for name in self.DnsCryptResolverNames:
+        for name in DnsCryptResolverNames:
             sudo("")
 
 
