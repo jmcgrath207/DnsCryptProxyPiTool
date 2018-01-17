@@ -5,8 +5,8 @@ DnsCryptSocket = """
 Description=dnscrypt-proxy listening socket
 
 [Socket]
-ListenStream=127.0.0.1:53
-ListenDatagram=127.0.0.1:53
+ListenStream={0}:41
+ListenDatagram={0}:41
 
 [Install]
 WantedBy=sockets.target

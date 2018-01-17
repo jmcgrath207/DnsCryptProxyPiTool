@@ -64,28 +64,22 @@ class FabricCommandClass(CsvClass):
             if name not in AvailableResolvers:
                 raise ValueError(name + ' Is not a Vaild Resolver Name. Please Check ' + DnsCryptResolverCsvLink + ' to ensure the name is correct')
 
-        socketFiles = []
+
         runningSockets = sudo("ss -nlut | awk 'NR>1 {print  $5}'")
         runningSockets = re.sub(r".*[a-zA-Z]+\S","",runningSockets).split()
         for name in DnsCryptResolverNames:
             with cd(DnsCryptExractDir + "/dnscryptBuild/"):
-                if(exists("dnscrypt-proxy.socket")):
-                    run("rm dnscrypt-proxy.socket")
-                fabappend('dnscrypt-proxy.socket', DnsCryptSocket)
-                run("cp dnscrypt-proxy.socket " "dnscrypt-proxy@" + name + ".socket")
+                run("rm dnscrypt@*")
                 while True:
                     if LoopBackStartAddress + ":41" not in runningSockets:
-                        run("sed -i 's/127.0.0.1:53/" + LoopBackStartAddress + ":41/g' dnscrypt-proxy@" + name + ".socket")
+                        fabappend("dnscrypt-proxy@" + name + ".socket", DnsCryptSocket.format(LoopBackStartAddress))
                         runningSockets.append(LoopBackStartAddress + ":41")
-                        socketFiles.append("Also=dnscrypt-proxy@" + name + ".socket")
                         break
                     LoopBackStartAddress = str(ipaddress.ip_address(LoopBackStartAddress) + 1)
                     if LoopBackStartAddress == '127.255.255.254':
                         raise ValueError("No Ip address available in the 127.0.0.0/8 IPV4 Range")
 
         with cd(DnsCryptExractDir + "/dnscryptBuild/"):
-            if (exists("dnscrypt-proxy@.service")):
-                run("rm dnscrypt-proxy@.service")
             fabappend('dnscrypt-proxy@.service',DnsCryptService)
             sudo("cp ./dnscrypt-proxy@* /etc/systemd/system/.")
         sudo("systemctl daemon-reload")

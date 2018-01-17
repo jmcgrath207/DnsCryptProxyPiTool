@@ -13,6 +13,7 @@ class FabricExecuteClass(FabricCommandClass):
                  host: str = host):
         env.user = user
         env.password = password
+        env.warn_only = True
         self.host = host
 
 
@@ -40,5 +41,5 @@ class FabricExecuteClass(FabricCommandClass):
         FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverNames = DnsCryptResolverNames
         FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverCsvLink = DnsCryptResolverCsvLink
         FabricCommandClass.CommandCreateDNSCryptProxies.LoopBackStartAddress = LoopBackStartAddress
-        FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptExractDir =  DnsCryptExractDir
+        FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptExractDir = DnsCryptExractDir
         execute(self.CommandCreateDNSCryptProxies, host=self.host)
