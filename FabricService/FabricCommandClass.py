@@ -10,18 +10,6 @@ from FabricService.StringContainer import DnsCryptService, DnsCryptSocket
 class FabricCommandClass(CsvClass):
 
 
-    def __init__(self, DnsCryptDownloadLink: str, DnsCryptExractDir: str,
-                 DnsCryptResolverCsvLink: str, DnsCryptResolverDir: str,
-                 LoopBackStartAddress: str):
-        self.DnsCryptDownloadLink = DnsCryptDownloadLink
-        self.DnsCryptExractDir = DnsCryptExractDir
-        self.DnsCryptResolverCsvLink = DnsCryptResolverCsvLink
-        self.DnsCryptResolverDir = DnsCryptResolverDir
-        self.LoopBackStartAddress = LoopBackStartAddress
-        super().__init__(DnsCryptResolverDir=DnsCryptResolverDir)
-
-
-
 
     def CommandSystemPackages(self):
         requiredPackages = "build-essential tcpdump dnsutils libsodium-dev locate " \
@@ -34,59 +22,68 @@ class FabricCommandClass(CsvClass):
 
 
     def CommandBuildDNSCrypt(self):
-
+        DnsCryptExractDir = FabricCommandClass.CommandBuildDNSCrypt.DnsCryptExractDir
+        DnsCryptDownloadLink = FabricCommandClass.CommandBuildDNSCrypt.DnsCryptDownloadLink
         returnCode = run("which dnscrypt-proxy")
         if(returnCode.failed):
-            with cd(self.DnsCryptExractDir):
-                run('wget' + self.DnsCryptDownloadLink)
+            with cd(DnsCryptExractDir):
+                run('wget' + DnsCryptDownloadLink)
                 run('tar -xf dnscrypt*.tar.gz -C dnscryptBuild --strip-components=1')
-            with cd(self.DnsCryptExractDir + "/dnscryptBuild/"):
+            with cd(DnsCryptExractDir + "/dnscryptBuild/"):
                 sudo("ldconfig")
                 run("./configure --with-systemd")
                 run("make")
                 sudo("make install")
         else:
-            run("mkdir -p " + self.DnsCryptExractDir + "/dnscryptBuild/")
+            run("mkdir -p " + DnsCryptExractDir + "/dnscryptBuild/")
 
     def CommandAddDnsCryptUser(self):
-
         returnCode = run("id -u dnscrypt")
         if(returnCode.failed):
             sudo("useradd -r -d /var/dnscrypt -m -s /usr/sbin/nologin dnscrypt")
 
 
     def CommandUpdateDnsCryptResolvers(self):
-        with cd(self.DnsCryptResolverDir):
-            sudo("wget -N " + self.DnsCryptResolverCsvLink)
+        DnsCryptResolverCsvLink = FabricCommandClass.CommandUpdateDnsCryptResolvers.DnsCryptResolverCsvLink
+        DnsCryptResolverDir = FabricCommandClass.CommandUpdateDnsCryptResolvers.DnsCryptResolverDir
+        with cd(DnsCryptResolverDir):
+            sudo("wget -N " + DnsCryptResolverCsvLink)
 
 
     def CommandCreateDNSCryptProxies(self):
-        AvailableResolvers = self.GetDnsCryptProxyNames()
+
+        DnsCryptResolverDir =  FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverDir
         DnsCryptResolverNames = FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverNames
+        DnsCryptResolverCsvLink = FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverCsvLink
+        LoopBackStartAddress  = FabricCommandClass.CommandCreateDNSCryptProxies.LoopBackStartAddress
+        DnsCryptExractDir = FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptExractDir
+
+        AvailableResolvers = self.GetDnsCryptProxyNames(DnsCryptResolverDir)
+
         for name in DnsCryptResolverNames:
             if name not in AvailableResolvers:
-                raise ValueError(name + ' Is not a Vaild Resolver Name. Please Check ' + self.DnsCryptResolverCsvLink + ' to ensure the name is correct')
+                raise ValueError(name + ' Is not a Vaild Resolver Name. Please Check ' + DnsCryptResolverCsvLink + ' to ensure the name is correct')
 
         socketFiles = []
         runningSockets = sudo("ss -nlut | awk 'NR>1 {print  $5}'")
         runningSockets = re.sub(r".*[a-zA-Z]+\S","",runningSockets).split()
         for name in DnsCryptResolverNames:
-            with cd(self.DnsCryptExractDir + "/dnscryptBuild/"):
+            with cd(DnsCryptExractDir + "/dnscryptBuild/"):
                 if(exists("dnscrypt-proxy.socket")):
                     run("rm dnscrypt-proxy.socket")
                 fabappend('dnscrypt-proxy.socket', DnsCryptSocket)
                 run("cp dnscrypt-proxy.socket " "dnscrypt-proxy@" + name + ".socket")
                 while True:
-                    if self.LoopBackStartAddress + ":41" not in runningSockets:
-                        run("sed -i 's/127.0.0.1:53/" + self.LoopBackStartAddress + ":41/g' dnscrypt-proxy@" + name + ".socket")
-                        runningSockets.append(self.LoopBackStartAddress + ":41")
+                    if LoopBackStartAddress + ":41" not in runningSockets:
+                        run("sed -i 's/127.0.0.1:53/" + LoopBackStartAddress + ":41/g' dnscrypt-proxy@" + name + ".socket")
+                        runningSockets.append(LoopBackStartAddress + ":41")
                         socketFiles.append("Also=dnscrypt-proxy@" + name + ".socket")
                         break
-                    self.LoopBackStartAddress = str(ipaddress.ip_address(self.LoopBackStartAddress) + 1)
-                    if self.LoopBackStartAddress == '127.255.255.254':
+                    LoopBackStartAddress = str(ipaddress.ip_address(LoopBackStartAddress) + 1)
+                    if LoopBackStartAddress == '127.255.255.254':
                         raise ValueError("No Ip address available in the 127.0.0.0/8 IPV4 Range")
 
-        with cd(self.DnsCryptExractDir + "/dnscryptBuild/"):
+        with cd(DnsCryptExractDir + "/dnscryptBuild/"):
             if (exists("dnscrypt-proxy@.service")):
                 run("rm dnscrypt-proxy@.service")
             fabappend('dnscrypt-proxy@.service',DnsCryptService)

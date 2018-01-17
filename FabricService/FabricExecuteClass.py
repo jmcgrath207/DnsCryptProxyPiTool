@@ -10,17 +10,11 @@ class FabricExecuteClass(FabricCommandClass):
 
 
     def __init__(self,user: str = user, password: str = password,
-                 host: str = host,DnsCryptDownloadLink: str = DnsCryptDownloadLink,
-                 DnsCryptExractDir: str = DnsCryptExractDir,
-                 LoopBackStartAddress: str = LoopBackStartAddress):
+                 host: str = host):
         env.user = user
         env.password = password
         self.host = host
-        super().__init__(DnsCryptDownloadLink=DnsCryptDownloadLink,
-                         DnsCryptExractDir=DnsCryptExractDir,
-                         DnsCryptResolverCsvLink=DnsCryptResolverCsvLink,
-                         DnsCryptResolverDir=DnsCryptResolverDir,
-                         LoopBackStartAddress=LoopBackStartAddress)
+
 
 
 
@@ -29,14 +23,22 @@ class FabricExecuteClass(FabricCommandClass):
         execute(self.CommandSystemPackages, host=self.host)
 
     def ExecuteBuildDNSCrypt(self):
+        FabricCommandClass.CommandBuildDNSCrypt.DnsCryptExractDir = DnsCryptExractDir
+        FabricCommandClass.CommandBuildDNSCrypt.DnsCryptDownloadLink = DnsCryptDownloadLink
         execute(self.CommandBuildDNSCrypt, host=self.host)
 
     def ExecuteAddDnsCryptUser(self):
         execute(self.CommandAddDnsCryptUser, host=self.host)
 
     def ExecuteUpdateDnsCryptResolvers(self):
+        FabricCommandClass.CommandUpdateDnsCryptResolvers.DnsCryptResolverCsvLink = DnsCryptResolverCsvLink
+        FabricCommandClass.CommandUpdateDnsCryptResolvers.DnsCryptResolverDir = DnsCryptResolverDir
         execute(self.CommandUpdateDnsCryptResolvers, host=self.host)
 
     def ExecuteCreateDNSCryptProxies(self):
+        FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverDir = DnsCryptResolverDir
         FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverNames = DnsCryptResolverNames
+        FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverCsvLink = DnsCryptResolverCsvLink
+        FabricCommandClass.CommandCreateDNSCryptProxies.LoopBackStartAddress = LoopBackStartAddress
+        FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptExractDir =  DnsCryptExractDir
         execute(self.CommandCreateDNSCryptProxies, host=self.host)
