@@ -60,16 +60,23 @@ class FabricCommandClass(CsvClass):
 
         AvailableResolvers = self.GetDnsCryptProxyNames(DnsCryptResolverDir)
 
+        # Check if Resolver Name is Correct
+
         for name in DnsCryptResolverNames:
             if name not in AvailableResolvers:
                 raise ValueError(name + ' Is not a Vaild Resolver Name. Please Check ' + DnsCryptResolverCsvLink + ' to ensure the name is correct')
 
+        # Clear Old Files
+
+        with cd(DnsCryptExractDir + "/dnscryptBuild/"):
+            run("rm dnscrypt-proxy@*")
+
+        # Find a Avaible Socket LoopBack Address and Create Socket Files
 
         runningSockets = sudo("ss -nlut | awk 'NR>1 {print  $5}'")
         runningSockets = re.sub(r".*[a-zA-Z]+\S","",runningSockets).split()
         for name in DnsCryptResolverNames:
             with cd(DnsCryptExractDir + "/dnscryptBuild/"):
-                run("rm dnscrypt@*")
                 while True:
                     if LoopBackStartAddress + ":41" not in runningSockets:
                         fabappend("dnscrypt-proxy@" + name + ".socket", DnsCryptSocket.format(LoopBackStartAddress))
@@ -79,13 +86,28 @@ class FabricCommandClass(CsvClass):
                     if LoopBackStartAddress == '127.255.255.254':
                         raise ValueError("No Ip address available in the 127.0.0.0/8 IPV4 Range")
 
+
+        ### Stop and Remove Old Dns Proxy Services
+        sudo("systemctl stop dnscrypt-proxy@\*")
+        sudo("systemctl disable dnscrypt-proxy@\*")
+        sudo("rm /etc/systemd/system/multi-user.target.wants/dnscrypt-proxy*")
+        sudo("rm /etc/systemd/system/sockets.target.wants/dnscrypt-proxy*")
+        sudo("rm /etc/systemd/system/dnscrypt-proxy*")
+        sudo("systemctl daemon-reload")
+        sudo("systemctl reset-failed")
+
+
+
+        # Create Service then start and enable them
         with cd(DnsCryptExractDir + "/dnscryptBuild/"):
             fabappend('dnscrypt-proxy@.service',DnsCryptService)
             sudo("cp ./dnscrypt-proxy@* /etc/systemd/system/.")
         sudo("systemctl daemon-reload")
         for name in DnsCryptResolverNames:
-            sudo("")
-
+            sudo("systemctl enable dnscrypt-proxy@" + name +".socket")
+            sudo("systemctl enable dnscrypt-proxy@" + name + ".service")
+            sudo("systemctl start dnscrypt-proxy@" + name + ".socket")
+            sudo("systemctl start dnscrypt-proxy@" + name + ".service")
 
 
 

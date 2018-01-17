@@ -39,9 +39,9 @@ sudo systemctl reset-failed
 
 sudo systemctl enable dnscrypt-proxy@d0wn-random-ns1.socket
 sudo systemctl enable dnscrypt-proxy@d0wn-random-ns1.service
-sudo systemctl start dnscrypt-proxy@d0wn-random-ns1.service
-sudo systemctl start dnscrypt-proxy@d0wn-random-ns1.socket
 
+sudo systemctl start dnscrypt-proxy@d0wn-random-ns1.socket
+sudo systemctl start dnscrypt-proxy@d0wn-random-ns1.service
 
 
 sudo systemctl enable dnscrypt-proxy@d0wn-random-ns2.socket
