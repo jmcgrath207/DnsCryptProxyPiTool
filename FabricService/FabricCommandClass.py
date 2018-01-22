@@ -75,7 +75,7 @@ class FabricCommandClass(CsvClass):
 
         # Find a Avaible Socket LoopBack Address and Create Socket Files
 
-        ListenAddress = []
+        ListenAddresses = []
         runningSockets = sudo("ss -nlut | awk 'NR>1 {print  $5}'")
         runningSockets = re.sub(r".*[a-zA-Z]+\S","",runningSockets).split()
         for name in DnsCryptResolverNames:
@@ -84,7 +84,7 @@ class FabricCommandClass(CsvClass):
                     if LoopBackStartAddress + ":41" not in runningSockets:
                         fabappend("dnscrypt-proxy@" + name + ".socket", DnsCryptSocket.format(LoopBackStartAddress))
                         runningSockets.append(LoopBackStartAddress + ":41")
-                        ListenAddress.append("server=" + LoopBackStartAddress + "#41")
+                        ListenAddresses.append(LoopBackStartAddress)
                         break
                     LoopBackStartAddress = str(ipaddress.ip_address(LoopBackStartAddress) + 1)
                     if LoopBackStartAddress == '127.255.255.254':
@@ -113,26 +113,32 @@ class FabricCommandClass(CsvClass):
             sudo("systemctl start dnscrypt-proxy@" + name + ".socket")
             sudo("systemctl start dnscrypt-proxy@" + name + ".service")
 
-        return ListenAddress
+        return ListenAddresses
 
 
 
 
     def CommandChangeDnsMasq(self):
 
-
-        ListenAddress = FabricCommandClass.CommandChangeDnsMasq.ListenAddress
+        DnsCryptResolverNames = FabricCommandClass.CommandChangeDnsMasq.DnsCryptResolverNames
+        ListenAddresses = FabricCommandClass.CommandChangeDnsMasq.ListenAddresses
         host = FabricCommandClass.CommandChangeDnsMasq.host
 
-
-
+        ListenAddresses = ListenAddresses[host]
         with cd("/etc/dnsmasq.d"):
             sudo("rm -f 02-dnscrypt.conf")
-            ListenfinalAddresses = '\n'.join(ListenAddress[host])
-            fabappend('02-dnscrypt.conf', DnsCryptConf.format(ListenfinalAddresses),use_sudo=True)
+            ConfListenAddresses = ["server=" + ListenAddress + "#41" for ListenAddress in ListenAddresses]
+            ConfListenAddresses = '\n'.join(ConfListenAddresses)
+            fabappend('02-dnscrypt.conf', DnsCryptConf.format(ConfListenAddresses),use_sudo=True)
 
         comment('/etc/dnsmasq.d/01-pihole.conf', r'server=.*', use_sudo=True, backup='')
         comment('/etc/pihole/setupVars.conf', r'PIHOLE_DNS.*',use_sudo=True,backup='')
+        sudo("sed -i 's/.*dnscrypt.*//g' /etc/hosts")
+        ## TODO: need to change Foward Detination Logs in Pihole
+        for name,address in zip(DnsCryptResolverNames,ListenAddresses):
+            sudo("sh -c 'echo \"{0}\t{1} \" >> /etc/hosts'".format(address,name + "-dnscrypt"))
+
+
 
 
         sudo("service dnsmasq restart")
