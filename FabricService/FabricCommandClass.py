@@ -1,9 +1,9 @@
 from fabric.api import sudo, cd, run
-from fabric.contrib.files import append as fabappend, exists
+from fabric.contrib.files import append as fabappend, exists, comment
 import re
 import ipaddress
 from CsvService.CsvClass import CsvClass
-from FabricService.StringContainer import DnsCryptService, DnsCryptSocket
+from FabricService.StringContainer import DnsCryptService, DnsCryptSocket, DnsCryptConf
 
 
 
@@ -50,7 +50,7 @@ class FabricCommandClass(CsvClass):
             sudo("wget -N " + DnsCryptResolverCsvLink)
 
 
-    def CommandCreateDNSCryptProxies(self):
+    def CommandCreateDNSCryptProxies(self) -> list:
 
         DnsCryptResolverDir =  FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverDir
         DnsCryptResolverNames = FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverNames
@@ -59,6 +59,8 @@ class FabricCommandClass(CsvClass):
         DnsCryptExractDir = FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptExractDir
 
         AvailableResolvers = self.GetDnsCryptProxyNames(DnsCryptResolverDir)
+
+
 
         # Check if Resolver Name is Correct
 
@@ -73,6 +75,7 @@ class FabricCommandClass(CsvClass):
 
         # Find a Avaible Socket LoopBack Address and Create Socket Files
 
+        ListenAddress = []
         runningSockets = sudo("ss -nlut | awk 'NR>1 {print  $5}'")
         runningSockets = re.sub(r".*[a-zA-Z]+\S","",runningSockets).split()
         for name in DnsCryptResolverNames:
@@ -81,6 +84,7 @@ class FabricCommandClass(CsvClass):
                     if LoopBackStartAddress + ":41" not in runningSockets:
                         fabappend("dnscrypt-proxy@" + name + ".socket", DnsCryptSocket.format(LoopBackStartAddress))
                         runningSockets.append(LoopBackStartAddress + ":41")
+                        ListenAddress.append("server=" + LoopBackStartAddress + "#41")
                         break
                     LoopBackStartAddress = str(ipaddress.ip_address(LoopBackStartAddress) + 1)
                     if LoopBackStartAddress == '127.255.255.254':
@@ -104,10 +108,35 @@ class FabricCommandClass(CsvClass):
             sudo("cp ./dnscrypt-proxy@* /etc/systemd/system/.")
         sudo("systemctl daemon-reload")
         for name in DnsCryptResolverNames:
-            sudo("systemctl enable dnscrypt-proxy@" + name +".socket")
+            sudo("systemctl enable dnscrypt-proxy@" + name + ".socket")
             sudo("systemctl enable dnscrypt-proxy@" + name + ".service")
             sudo("systemctl start dnscrypt-proxy@" + name + ".socket")
             sudo("systemctl start dnscrypt-proxy@" + name + ".service")
+
+        return ListenAddress
+
+
+
+
+    def CommandChangeDnsMasq(self):
+
+
+        ListenAddress = FabricCommandClass.CommandChangeDnsMasq.ListenAddress
+        host = FabricCommandClass.CommandChangeDnsMasq.host
+
+
+
+        with cd("/etc/dnsmasq.d"):
+            sudo("rm -f 02-dnscrypt.conf")
+            ListenfinalAddresses = '\n'.join(ListenAddress[host])
+            fabappend('02-dnscrypt.conf', DnsCryptConf.format(ListenfinalAddresses),use_sudo=True)
+
+        comment('/etc/dnsmasq.d/01-pihole.conf', r'server=.*', use_sudo=True, backup='')
+        comment('/etc/pihole/setupVars.conf', r'PIHOLE_DNS.*',use_sudo=True,backup='')
+
+
+        sudo("service dnsmasq restart")
+
 
 
 

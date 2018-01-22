@@ -15,6 +15,7 @@ class FabricExecuteClass(FabricCommandClass):
         env.password = password
         env.warn_only = True
         self.host = host
+        self.ListenAddress = None
 
 
 
@@ -42,4 +43,11 @@ class FabricExecuteClass(FabricCommandClass):
         FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverCsvLink = DnsCryptResolverCsvLink
         FabricCommandClass.CommandCreateDNSCryptProxies.LoopBackStartAddress = LoopBackStartAddress
         FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptExractDir = DnsCryptExractDir
-        execute(self.CommandCreateDNSCryptProxies, host=self.host)
+        self.ListenAddress = execute(self.CommandCreateDNSCryptProxies, host=self.host)
+
+
+    def ExecuteChangeDnsMasq(self):
+        FabricCommandClass.CommandChangeDnsMasq.ListenAddress = self.ListenAddress
+        FabricCommandClass.CommandChangeDnsMasq.host = self.host
+        execute(self.CommandChangeDnsMasq, host=self.host)
+

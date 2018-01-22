@@ -67,3 +67,10 @@ ExecStart=/usr/local/sbin/dnscrypt-proxy \
 Restart=always
 RestartSec=10
 """
+
+
+DnsCryptConf = """
+# Add other name servers here, with domain specs if they are for
+# non-public domains.
+{0}
+"""

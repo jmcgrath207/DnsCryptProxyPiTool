@@ -17,3 +17,5 @@ Fec.ExecuteAddDnsCryptUser()
 
 
 Fec.ExecuteCreateDNSCryptProxies()
+
+Fec.ExecuteChangeDnsMasq()
