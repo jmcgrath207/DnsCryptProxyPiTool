@@ -13,7 +13,7 @@ class FabricCommandClass(CsvClass):
 
     def CommandSystemPackages(self):
         requiredPackages = "build-essential tcpdump dnsutils libsodium-dev locate " \
-                           "bash-completion libsystemd-dev pkg-config python3-dev rng-tools"
+                           "bash-completion libsystemd-dev pkg-config python3-dev rng-tools jq"
         returnCode = run("dpkg -l " + requiredPackages)
         if(returnCode.failed):
             sudo('sudo apt-get update')

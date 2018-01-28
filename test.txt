@@ -1,6 +1,6 @@
 
 
-
+sudo journalctl -u dnscrypt-proxy@\* | grep -i ERROR
 
 ### Show
 
@@ -48,3 +48,24 @@ sudo systemctl enable dnscrypt-proxy@d0wn-random-ns2.socket
 sudo systemctl enable dnscrypt-proxy@d0wn-random-ns2.service
 sudo systemctl start dnscrypt-proxy@d0wn-random-ns2.socket
 sudo systemctl start dnscrypt-proxy@d0wn-random-ns2.service
+
+
+# Monitor Services
+
+sudo journalctl -u  dnscrypt-proxy@\* -o json | jq  '. | select(.MESSAGE | tostring |contains("ERROR")) | ._SYSTEMD_UNIT' | sort | uniq | xargs -I % bash -c ' sudo systemctl stop %;  sudo systemctl start %'
+
+
+sudo journalctl -u  dnscrypt-proxy@\* -o json-pretty | jq -r '"\(._SYSTEMD_UNIT)" + "\n" +  "\(.MESSAGE)"'
+
+dnscrypt-proxy@d0wn-random-ns2.service
+Sun Jan 28 00:41:06 2018 [INFO] Chosen certificate #1517092441 is valid from [2018-01-27] to [2018-01-28]
+dnscrypt-proxy@d0wn-random-ns2.service
+Sun Jan 28 00:41:06 2018 [INFO] Server key fingerprint is 7966:F177:703B:772A:5267:656A:23A6:F13F:BB2B:4E41:DF03:C441:D7EB:6CB2:542E:BB7C
+dnscrypt-proxy@d0wn-random-ns1.service
+Sun Jan 28 00:43:12 2018 [INFO] Refetching server certificates
+dnscrypt-proxy@d0wn-random-ns1.service
+Sun Jan 28 00:43:27 2018 [ERROR] Unable to retrieve server certificates
+dnscrypt-proxy@d0wn-random-ns1.service
+Sun Jan 28 00:48:28 2018 [INFO] Refetching server certificates
+dnscrypt-proxy@d0wn-random-ns1.service
+Sun Jan 28 00:48:43 2018 [ERROR] Unable to retrieve server certificates
