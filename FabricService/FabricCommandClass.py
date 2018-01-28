@@ -1,9 +1,10 @@
 from fabric.api import sudo, cd, run
-from fabric.contrib.files import append as fabappend, exists, comment
+from fabric.contrib.files import append as fabappend, comment
 import re
 import ipaddress
 from CsvService.CsvClass import CsvClass
-from FabricService.StringContainer import DnsCryptService, DnsCryptSocket, DnsCryptConf
+from FabricService.StringContainer import DnsCryptService, DnsCryptSocket,\
+    DnsCryptConf, DnsCryptSudoer
 
 
 
@@ -22,6 +23,14 @@ class FabricCommandClass(CsvClass):
 
 
     def CommandBuildDNSCrypt(self):
+        """
+        Install DnsCrypt Proxy if not present
+
+        :return:
+        """
+
+
+
         DnsCryptExractDir = FabricCommandClass.CommandBuildDNSCrypt.DnsCryptExractDir
         DnsCryptDownloadLink = FabricCommandClass.CommandBuildDNSCrypt.DnsCryptDownloadLink
         returnCode = run("which dnscrypt-proxy")
@@ -38,14 +47,19 @@ class FabricCommandClass(CsvClass):
             run("mkdir -p " + DnsCryptExractDir + "/dnscryptBuild/")
 
     def CommandAddDnsCryptUser(self):
+        """
+        Creates  DNS crypt User
+
+        :return:
+        """
         returnCode = run("id -u dnscrypt")
         if(returnCode.failed):
-            sudo("useradd -r -d /var/dnscrypt -m -s /usr/sbin/nologin dnscrypt")
+            sudo("useradd -r -m -s /usr/sbin/nologin -G systemd-journal dnscrypt")
 
 
-    def CommandUpdateDnsCryptResolvers(self):
-        DnsCryptResolverCsvLink = FabricCommandClass.CommandUpdateDnsCryptResolvers.DnsCryptResolverCsvLink
-        DnsCryptResolverDir = FabricCommandClass.CommandUpdateDnsCryptResolvers.DnsCryptResolverDir
+    def CommandDownloadDnsCryptResolvers(self):
+        DnsCryptResolverCsvLink = FabricCommandClass.CommandDownloadDnsCryptResolvers.DnsCryptResolverCsvLink
+        DnsCryptResolverDir = FabricCommandClass.CommandDownloadDnsCryptResolvers.DnsCryptResolverDir
         with cd(DnsCryptResolverDir):
             sudo("wget -N " + DnsCryptResolverCsvLink)
 
@@ -73,7 +87,7 @@ class FabricCommandClass(CsvClass):
         with cd(DnsCryptExractDir + "/dnscryptBuild/"):
             run("rm dnscrypt-proxy@*")
 
-        # Find a Avaible Socket LoopBack Address and Create Socket Files
+        # Find a Available Socket LoopBack Address and Create Socket Files
 
         ListenAddresses = []
         runningSockets = sudo("ss -nlut | awk 'NR>1 {print  $5}'")
@@ -119,6 +133,11 @@ class FabricCommandClass(CsvClass):
 
 
     def CommandChangeDnsMasq(self):
+        """
+        Updates the DnsMasq Configs with the New Proxies and Restarts it
+
+        :return: None
+        """
 
         DnsCryptResolverNames = FabricCommandClass.CommandChangeDnsMasq.DnsCryptResolverNames
         ListenAddresses = FabricCommandClass.CommandChangeDnsMasq.ListenAddresses
@@ -142,6 +161,38 @@ class FabricCommandClass(CsvClass):
 
 
         sudo("service dnsmasq restart")
+
+
+
+    def CommandCreateCronJob(self):
+        """
+        Create Cron Job that Restart a Proxy server when it see a message from the
+        Dns Crypt Service
+
+        Defaults are every 5 mines and Look for Message that Contain Error
+
+        :return: None
+        """
+        CronJobTime = FabricCommandClass.CommandCreateCronJob.CronJobTime
+        CronJobMessage = FabricCommandClass.CommandCreateCronJob.CronJobMessage
+
+
+        with cd("/etc/sudoers.d"):
+            sudo("rm -f DnsCryptSudoer")
+            fabappend('DnsCryptSudoer', DnsCryptSudoer,use_sudo=True)
+
+        with cd("/etc/cron.d"):
+            sudo("rm -f dnscryptCron")
+
+        sudo(r"""
+        sudo echo "{0} dnscrypt sudo journalctl -u  dnscrypt-proxy@\* -o json | \
+        jq  '. | select(.MESSAGE | tostring |contains(\\"{1}\\")) | \
+        ._SYSTEMD_UNIT' | sort | uniq | grep -Pho '(?<=\\").*(?=\.service)' | \
+        xargs -I \% bash -c 'sudo systemctl stop \%.socket;sudo systemctl stop \%.service;sudo systemctl start \%.socket;sudo systemctl start \%.service'" | \
+        sudo tee -a /etc/cron.d/dnscryptCron > /dev/null 2>&1
+        """.format(CronJobTime,CronJobMessage),shell_escape=True)
+
+
 
 
 

@@ -74,3 +74,15 @@ DnsCryptConf = """
 # non-public domains.
 {0}
 """
+
+
+DnsCryptSudoer = """
+
+
+%dnscrypt ALL= NOPASSWD: /bin/systemctl start dnscrypt-proxy@*
+%dnscrypt ALL= NOPASSWD: /bin/systemctl stop dnscrypt-proxy@*
+%dnscrypt ALL= NOPASSWD: /bin/systemctl status dnscrypt-proxy@*
+%dnscrypt ALL= NOPASSWD: /bin/systemctl restart dnscrypt-proxy@*
+%dnscrypt ALL= NOPASSWD: /bin/journalctl -u  dnscrypt-proxy@* 
+
+"""

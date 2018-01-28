@@ -1,7 +1,8 @@
 from FabricService.FabricCommandClass import FabricCommandClass
 from FabricService import host,  password, user,DnsCryptDownloadLink,\
     DnsCryptExractDir,DnsCryptResolverCsvLink, DnsCryptResolverDir,\
-    DnsCryptResolverNames, LoopBackStartAddress
+    DnsCryptResolverNames, LoopBackStartAddress, CronJobMessage, \
+    CronJobTime
 from fabric.context_managers import env
 from fabric.tasks import execute
 
@@ -32,10 +33,10 @@ class FabricExecuteClass(FabricCommandClass):
     def ExecuteAddDnsCryptUser(self):
         execute(self.CommandAddDnsCryptUser, host=self.host)
 
-    def ExecuteUpdateDnsCryptResolvers(self):
-        FabricCommandClass.CommandUpdateDnsCryptResolvers.DnsCryptResolverCsvLink = DnsCryptResolverCsvLink
-        FabricCommandClass.CommandUpdateDnsCryptResolvers.DnsCryptResolverDir = DnsCryptResolverDir
-        execute(self.CommandUpdateDnsCryptResolvers, host=self.host)
+    def ExecuteDownloadDnsCryptResolvers(self):
+        FabricCommandClass.CommandDownloadDnsCryptResolvers.DnsCryptResolverCsvLink = DnsCryptResolverCsvLink
+        FabricCommandClass.CommandDownloadDnsCryptResolvers.DnsCryptResolverDir = DnsCryptResolverDir
+        execute(self.CommandDownloadDnsCryptResolvers, host=self.host)
 
     def ExecuteCreateDNSCryptProxies(self):
         FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverDir = DnsCryptResolverDir
@@ -51,4 +52,10 @@ class FabricExecuteClass(FabricCommandClass):
         FabricCommandClass.CommandChangeDnsMasq.ListenAddresses = self.ListenAddresses
         FabricCommandClass.CommandChangeDnsMasq.host = self.host
         execute(self.CommandChangeDnsMasq, host=self.host)
+
+
+    def ExecuteCreateCronJob(self):
+        FabricCommandClass.CommandCreateCronJob.CronJobTime = CronJobTime
+        FabricCommandClass.CommandCreateCronJob.CronJobMessage = CronJobMessage
+        execute(self.CommandCreateCronJob, host=self.host)
 

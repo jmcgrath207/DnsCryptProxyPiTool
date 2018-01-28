@@ -52,7 +52,9 @@ sudo systemctl start dnscrypt-proxy@d0wn-random-ns2.service
 
 # Monitor Services
 
-sudo journalctl -u  dnscrypt-proxy@\* -o json | jq  '. | select(.MESSAGE | tostring |contains("ERROR")) | ._SYSTEMD_UNIT' | sort | uniq | xargs -I % bash -c ' sudo systemctl stop %;  sudo systemctl start %'
+journalctl -u  dnscrypt-proxy@\* -o json | jq  '. | select(.MESSAGE | tostring |contains("ERROR")) | ._SYSTEMD_UNIT' | sort | uniq | xargs -I % bash -c 'systemctl stop %;systemctl start %'
+
+sudo journalctl -u  dnscrypt-proxy@\* -o json | jq  '. | select(.MESSAGE | tostring |contains("ERROR")) | ._SYSTEMD_UNIT' | sort | uniq | xargs -I % bash -c 'sudo systemctl stop %;  sudo systemctl start %'
 
 
 sudo journalctl -u  dnscrypt-proxy@\* -o json-pretty | jq -r '"\(._SYSTEMD_UNIT)" + "\n" +  "\(.MESSAGE)"'
