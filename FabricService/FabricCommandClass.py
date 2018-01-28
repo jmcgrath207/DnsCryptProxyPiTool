@@ -190,7 +190,7 @@ class FabricCommandClass(CsvClass):
         ._SYSTEMD_UNIT' | sort | uniq | grep -Pho '(?<=\\").*(?=\.service)' | \
         xargs -I \% bash -c 'sudo systemctl stop \%.socket;sudo systemctl stop \%.service;sudo systemctl start \%.socket;sudo systemctl start \%.service'" | \
         sudo tee -a /etc/cron.d/dnscryptCron > /dev/null 2>&1
-        """.format(CronJobTime,CronJobMessage),shell_escape=True)
+        """.format(CronJobTime,CronJobMessage))
 
 
 
