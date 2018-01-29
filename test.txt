@@ -28,7 +28,7 @@ sudo systemctl reset-failed
 
 
 
-
+sudo pip3 install --editable .
 
 
 
