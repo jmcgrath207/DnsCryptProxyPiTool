@@ -7,8 +7,8 @@ class CsvClass(object):
 
 
 
-    def GetDnsCryptProxyNames(self,DnsCryptResolverDir: str):
-        with open(DnsCryptResolverDir + "/dnscrypt-resolvers.csv", 'r') as f:
+    def GetDnsCryptProxyNames(self,dnscryptresolverdir: str):
+        with open(dnscryptresolverdir + "/dnscrypt-resolvers.csv", 'r') as f:
             reader = csv.reader(f)
             resolverList = list(reader)
             if 'Description' in resolverList[0]:

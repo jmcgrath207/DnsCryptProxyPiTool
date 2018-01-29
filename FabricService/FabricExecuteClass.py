@@ -21,38 +21,38 @@ class FabricExecuteClass(FabricCommandClass):
     def ExecuteSystemPackages(self):
         execute(self.CommandSystemPackages, host=self.host)
 
-    def ExecuteBuildDNSCrypt(self, DnsCryptExractDir: str,DnsCryptDownloadLink: str):
-        FabricCommandClass.CommandBuildDNSCrypt.DnsCryptExractDir = DnsCryptExractDir
-        FabricCommandClass.CommandBuildDNSCrypt.DnsCryptDownloadLink = DnsCryptDownloadLink
+    def ExecuteBuildDNSCrypt(self, dnscryptexractdir: str,dnscryptdownloadlink: str):
+        FabricCommandClass.CommandBuildDNSCrypt.dnscryptexractdir = dnscryptexractdir
+        FabricCommandClass.CommandBuildDNSCrypt.dnscryptdownloadlink = dnscryptdownloadlink
         execute(self.CommandBuildDNSCrypt, host=self.host)
 
     def ExecuteAddDnsCryptUser(self):
         execute(self.CommandAddDnsCryptUser, host=self.host)
 
-    def ExecuteDownloadDnsCryptResolvers(self,DnsCryptResolverCsvLink: str,DnsCryptResolverDir: str):
-        FabricCommandClass.CommandDownloadDnsCryptResolvers.DnsCryptResolverCsvLink = DnsCryptResolverCsvLink
-        FabricCommandClass.CommandDownloadDnsCryptResolvers.DnsCryptResolverDir = DnsCryptResolverDir
+    def ExecuteDownloadDnsCryptResolvers(self,dnscryptresolvercsvlink: str,dnscryptresolverdir: str):
+        FabricCommandClass.CommandDownloadDnsCryptResolvers.dnscryptresolvercsvlink = dnscryptresolvercsvlink
+        FabricCommandClass.CommandDownloadDnsCryptResolvers.dnscryptresolverdir = dnscryptresolverdir
         execute(self.CommandDownloadDnsCryptResolvers, host=self.host)
 
-    def ExecuteCreateDNSCryptProxies(self,DnsCryptResolverDir:str,DnsCryptResolverNames:str,DnsCryptResolverCsvLink:str,
-                                     LoopBackStartAddress: str, DnsCryptExractDir: str):
-        FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverDir = DnsCryptResolverDir
-        FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverNames = DnsCryptResolverNames
-        FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptResolverCsvLink = DnsCryptResolverCsvLink
-        FabricCommandClass.CommandCreateDNSCryptProxies.LoopBackStartAddress = LoopBackStartAddress
-        FabricCommandClass.CommandCreateDNSCryptProxies.DnsCryptExractDir = DnsCryptExractDir
+    def ExecuteCreateDNSCryptProxies(self,dnscryptresolverdir:str,dnscryptresolvernames:str,dnscryptresolvercsvlink:str,
+                                     loopbackstartaddress: str, dnscryptexractdir: str):
+        FabricCommandClass.CommandCreateDNSCryptProxies.dnscryptresolverdir = dnscryptresolverdir
+        FabricCommandClass.CommandCreateDNSCryptProxies.dnscryptresolvernames = dnscryptresolvernames
+        FabricCommandClass.CommandCreateDNSCryptProxies.dnscryptresolvercsvlink = dnscryptresolvercsvlink
+        FabricCommandClass.CommandCreateDNSCryptProxies.loopbackstartaddress = loopbackstartaddress
+        FabricCommandClass.CommandCreateDNSCryptProxies.dnscryptexractdir = dnscryptexractdir
         self.ListenAddresses = execute(self.CommandCreateDNSCryptProxies, host=self.host)
 
 
-    def ExecuteChangeDnsMasq(self,DnsCryptResolverNames: str):
-        FabricCommandClass.CommandChangeDnsMasq.DnsCryptResolverNames = DnsCryptResolverNames
+    def ExecuteChangeDnsMasq(self,dnscryptresolvernames: str):
+        FabricCommandClass.CommandChangeDnsMasq.dnscryptresolvernames = dnscryptresolvernames
         FabricCommandClass.CommandChangeDnsMasq.ListenAddresses = self.ListenAddresses
         FabricCommandClass.CommandChangeDnsMasq.host = self.host
         execute(self.CommandChangeDnsMasq, host=self.host)
 
 
-    def ExecuteCreateCronJob(self,CronJobTime: str,CronJobMessage: str):
-        FabricCommandClass.CommandCreateCronJob.CronJobTime = CronJobTime
-        FabricCommandClass.CommandCreateCronJob.CronJobMessage = CronJobMessage
+    def ExecuteCreateCronJob(self,cronjobtime: str,cronjobmessage: str):
+        FabricCommandClass.CommandCreateCronJob.cronjobtime = cronjobtime
+        FabricCommandClass.CommandCreateCronJob.cronjobmessage = cronjobmessage
         execute(self.CommandCreateCronJob, host=self.host)
 
