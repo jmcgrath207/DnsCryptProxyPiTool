@@ -13,6 +13,10 @@ class FabricCommandClass(CsvClass):
 
 
     def CommandSystemPackages(self):
+        """
+        Installs required ssh packages
+        :return:
+        """
         requiredPackages = "build-essential tcpdump dnsutils libsodium-dev locate " \
                            "bash-completion libsystemd-dev pkg-config python3-dev rng-tools jq"
         returnCode = run("dpkg -l " + requiredPackages)
@@ -58,6 +62,10 @@ class FabricCommandClass(CsvClass):
 
 
     def CommandDownloadDnsCryptResolvers(self):
+        """
+        Downloads CSV of Resolvers
+        :return:
+        """
         dnscryptresolvercsvlink = FabricCommandClass.CommandDownloadDnsCryptResolvers.dnscryptresolvercsvlink
         dnscryptresolverdir = FabricCommandClass.CommandDownloadDnsCryptResolvers.dnscryptresolverdir
         with cd(dnscryptresolverdir):
@@ -65,6 +73,10 @@ class FabricCommandClass(CsvClass):
 
 
     def CommandCreateDNSCryptProxies(self) -> list:
+        """
+        Creates Dns Crypt Proxies
+        :return: ListenAddresses
+        """
 
         dnscryptresolverdir =  FabricCommandClass.CommandCreateDNSCryptProxies.dnscryptresolverdir
         dnscryptresolvernames = FabricCommandClass.CommandCreateDNSCryptProxies.dnscryptresolvernames
@@ -80,7 +92,7 @@ class FabricCommandClass(CsvClass):
         #TODO: Check To see if command if look at file correctly.
         for name in dnscryptresolvernames:
             if name not in AvailableResolvers:
-                raise ValueError(name + ' Is not a Vaild Resolver Name. Please Check ' + dnscryptresolvercsvlink + ' to ensure the name is correct')
+                raise ValueError( str(name) + ' Is not a Vaild Resolver Name. Please Check ' + dnscryptresolvercsvlink + ' to ensure the name is correct')
 
         # Clear Old Files
 
@@ -116,7 +128,7 @@ class FabricCommandClass(CsvClass):
 
 
 
-        # Create Service then start and enable them
+        # Create Services then start and enable them
         with cd(dnscryptexractdir + "/dnscryptBuild/"):
             fabappend('dnscrypt-proxy@.service',DnsCryptService)
             sudo("cp ./dnscrypt-proxy@* /etc/systemd/system/.")
