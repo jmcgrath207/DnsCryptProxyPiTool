@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='DnsCryptPiHoleSetup',
-    version='0.13',
+    version='0.14',
     url='https://github.com/jmcgrath207/DnsCryptPiHoleSetup',
     license='MIT License',
     author='John McGrath',
@@ -14,10 +14,10 @@ setup(
     python_requires=">=3.5",
     install_requires=['Fabric3==1.13.1.post1','Click==6.7','click-help-colors==0.4'],
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
-    py_modules=['DnsCryptPiHoleSetup','DefaultConfig'],
+    include_package_data=False,
     entry_points={
         'console_scripts': [
-            'DnsCryptPiHoleSetup=DnsCryptPiHoleSetup:cli',
+            'DnsCryptPiHoleSetup=DnsCryptPiHoleSetup.DnsCryptPiHoleSetup:cli',
         ],
     },
     classifiers=[

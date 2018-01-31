@@ -1,18 +1,16 @@
 
-from DefaultConfig import host,  password, user,dnscryptdownloadlink,\
-dnscryptexractdir,dnscryptresolvercsvlink, dnscryptresolverdir,\
-    dnscryptresolvernames, loopbackstartaddress, cronjobmessage, \
+from DnsCryptPiHoleSetup.DefaultConfig import host,  password, user, cronjobmessage, \
     cronjobminutes
 
 
-from FabricService import FabricExecuteClass
+from DnsCryptPiHoleSetup.FabricService import FabricExecute
 
 
 
 
 
 def cli():
-    Fec = FabricExecuteClass.FabricExecuteClass(user,password,host)
+    Fec = FabricExecute.FabricExecuteClass(user, password, host)
     #Fec.ExecuteSystemPackages()
     #Fec.ExecuteBuildDNSCrypt(dnscryptexractdir,dnscryptdownloadlink)
     #Fec.ExecuteAddDnsCryptUser()

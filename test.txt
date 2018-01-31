@@ -1,4 +1,22 @@
 
+
+## Prod Build ###
+
+sudo pip3 uninstall DnsCryptPiHoleSetup
+python setup.py clean --all
+rm dist/*
+python3 setup.py bdist_wheel
+sudo pip3 install dist/*
+twine upload dist/*
+
+### DevBuild ###
+
+sudo rm -R *.egg*
+sudo rm /usr/local/bin/DnsCryptPiHoleSetup
+sudo pip3 install -e .
+
+
+
 tail -f /var/log/syslog |  grep -i cron
 sudo journalctl -u dnscrypt-proxy@\* | grep -i ERROR
 

@@ -2,8 +2,8 @@ from fabric.api import sudo, cd, run
 from fabric.contrib.files import append as fabappend, comment
 import re
 import ipaddress
-from CsvService.CsvClass import CsvClass
-from FabricService.StringContainer import DnsCryptService, DnsCryptSocket,\
+from DnsCryptPiHoleSetup.CsvService.Csv import CsvClass
+from DnsCryptPiHoleSetup.FabricService.StringContainer import DnsCryptService, DnsCryptSocket,\
     DnsCryptConf, DnsCryptSudoer
 
 
@@ -204,6 +204,8 @@ class FabricCommandClass(CsvClass):
         xargs -I \% bash -c 'sudo systemctl stop \%.socket;sudo systemctl stop \%.service;sudo systemctl start \%.socket;sudo systemctl start \%.service'" | \
         sudo tee -a /etc/cron.d/dnscryptCron > /dev/null 2>&1
         """.format(cronjobminutes,cronjobmessage))
+
+        print(" DNS crypt Setup has Ran Successfully")
 
 
 

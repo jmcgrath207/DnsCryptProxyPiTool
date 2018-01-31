@@ -1,12 +1,12 @@
 
-from DefaultConfig import host,  password, user,dnscryptdownloadlink,\
+from DnsCryptPiHoleSetup.DefaultConfig import host,  password, user,dnscryptdownloadlink,\
 dnscryptexractdir,dnscryptresolvercsvlink, dnscryptresolverdir,\
     dnscryptresolvernames, loopbackstartaddress, cronjobmessage, \
     cronjobminutes
 
 import click
 from click_help_colors import HelpColorsCommand
-from FabricService import FabricExecuteClass
+from DnsCryptPiHoleSetup.FabricService.FabricExecute import FabricExecuteClass
 from click.formatting import join_options
 
 
@@ -146,7 +146,7 @@ def cli(host, password, user,dnscryptexractdir,dnscryptdownloadlink,
         dnscryptresolvercsvlink,dnscryptresolverdir,dnscryptresolvernames,
         loopbackstartaddress,cronjobminutes,cronjobmessage
         ):
-    Fec = FabricExecuteClass.FabricExecuteClass(user,password,host)
+    Fec = FabricExecuteClass(user, password, host)
     Fec.ExecuteSystemPackages()
     Fec.ExecuteBuildDNSCrypt(dnscryptexractdir,dnscryptdownloadlink)
     Fec.ExecuteAddDnsCryptUser()
