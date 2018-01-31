@@ -1,5 +1,5 @@
 
-
+tail -f /var/log/syslog |  grep -i cron
 sudo journalctl -u dnscrypt-proxy@\* | grep -i ERROR
 
 ### Show

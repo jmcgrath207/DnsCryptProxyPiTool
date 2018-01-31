@@ -2,7 +2,7 @@
 from DefaultConfig import host,  password, user,dnscryptdownloadlink,\
 dnscryptexractdir,dnscryptresolvercsvlink, dnscryptresolverdir,\
     dnscryptresolvernames, loopbackstartaddress, cronjobmessage, \
-    cronjobtime
+    cronjobminutes
 
 import click
 from click_help_colors import HelpColorsCommand
@@ -140,11 +140,11 @@ class ShowDefaultSingleQuote(click.Option):
 @click.option('--dnscryptresolverdir', '-r',default=dnscryptresolverdir, help='Directory location of where the Csv resolver files are stored',show_default=True,cls=ShowDefaultSingleQuote)
 @click.option('--dnscryptresolvernames','-n', default=dnscryptresolvernames, help='Name of resolvers to be installed',show_default=True,type=list,cls=ListArgs)
 @click.option('--loopbackstartaddress', '-l', default=loopbackstartaddress, help='IPV4 Loopback Address you want to use for the socket unit file. The address will increment by the last octet when multiple proxies are installed',show_default=True,cls=ShowDefaultSingleQuote)
-@click.option('--cronjobtime','-t', default=cronjobtime, help='CronJob Time that you want to use for check if there is errors and restarting the individual dnscrypt proxy',show_default=True,cls=ShowDefaultSingleQuote)
+@click.option('--cronjobminutes','-t', default=cronjobminutes, help=' How often in minutes do you want the Cron Job use for check if there is errors and restarting the individual dnscrypt proxy ex. 10 = */10 * * * *',show_default=True,cls=ShowDefaultSingleQuote)
 @click.option('--cronjobmessage','-m', default=cronjobmessage, help='The Message you want to match on the DnsCrypt Proxy System Log to Trigger a Restart Event',show_default=True,cls=ShowDefaultSingleQuote)
 def cli(host, password, user,dnscryptexractdir,dnscryptdownloadlink,
         dnscryptresolvercsvlink,dnscryptresolverdir,dnscryptresolvernames,
-        loopbackstartaddress,cronjobtime,cronjobmessage
+        loopbackstartaddress,cronjobminutes,cronjobmessage
         ):
     Fec = FabricExecuteClass.FabricExecuteClass(user,password,host)
     Fec.ExecuteSystemPackages()
@@ -154,7 +154,7 @@ def cli(host, password, user,dnscryptexractdir,dnscryptdownloadlink,
     Fec.ExecuteCreateDNSCryptProxies(dnscryptresolverdir,dnscryptresolvernames,dnscryptresolvercsvlink,
                                      loopbackstartaddress, dnscryptexractdir)
     Fec.ExecuteChangeDnsMasq(dnscryptresolvernames)
-    Fec.ExecuteCreateCronJob(cronjobtime,cronjobmessage)
+    Fec.ExecuteCreateCronJob(cronjobminutes,cronjobmessage)
 
 
 

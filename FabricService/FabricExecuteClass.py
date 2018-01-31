@@ -51,8 +51,8 @@ class FabricExecuteClass(FabricCommandClass):
         execute(self.CommandChangeDnsMasq, host=self.host)
 
 
-    def ExecuteCreateCronJob(self,cronjobtime: str,cronjobmessage: str):
-        FabricCommandClass.CommandCreateCronJob.cronjobtime = cronjobtime
+    def ExecuteCreateCronJob(self,cronjobminutes: str,cronjobmessage: str):
+        FabricCommandClass.CommandCreateCronJob.cronjobminutes = cronjobminutes
         FabricCommandClass.CommandCreateCronJob.cronjobmessage = cronjobmessage
         execute(self.CommandCreateCronJob, host=self.host)
 

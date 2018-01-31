@@ -10,7 +10,7 @@ dnscryptresolverdir = "/usr/local/share/dnscrypt-proxy"
 dnscryptresolvernames = "['d0wn-random-ns1','d0wn-random-ns2']"
 loopbackstartaddress = "127.10.10.1"
 # https://crontab.guru/every-5-minutes
-cronjobtime ="*/5 * * * *"
+cronjobminutes ="1"
 cronjobmessage = "ERROR"
 
 

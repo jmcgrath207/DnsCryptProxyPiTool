@@ -185,7 +185,7 @@ class FabricCommandClass(CsvClass):
 
         :return: None
         """
-        cronjobtime = FabricCommandClass.CommandCreateCronJob.cronjobtime
+        cronjobminutes = FabricCommandClass.CommandCreateCronJob.cronjobminutes
         cronjobmessage = FabricCommandClass.CommandCreateCronJob.cronjobmessage
 
 
@@ -197,12 +197,12 @@ class FabricCommandClass(CsvClass):
             sudo("rm -f dnscryptCron")
 
         sudo(r"""
-        sudo echo "{0} dnscrypt sudo journalctl -u  dnscrypt-proxy@\* -o json | \
+        sudo echo "*/{0} * * * * dnscrypt sudo journalctl --since \\"{0} minutes ago\\" -u  dnscrypt-proxy@\* -o json | \
         jq  '. | select(.MESSAGE | tostring |contains(\\"{1}\\")) | \
         ._SYSTEMD_UNIT' | sort | uniq | grep -Pho '(?<=\\").*(?=\.service)' | \
         xargs -I \% bash -c 'sudo systemctl stop \%.socket;sudo systemctl stop \%.service;sudo systemctl start \%.socket;sudo systemctl start \%.service'" | \
         sudo tee -a /etc/cron.d/dnscryptCron > /dev/null 2>&1
-        """.format(cronjobtime,cronjobmessage))
+        """.format(cronjobminutes,cronjobmessage))
 
 
 

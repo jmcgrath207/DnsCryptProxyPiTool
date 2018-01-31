@@ -83,6 +83,6 @@ DnsCryptSudoer = """
 %dnscrypt ALL= NOPASSWD: /bin/systemctl stop dnscrypt-proxy@*
 %dnscrypt ALL= NOPASSWD: /bin/systemctl status dnscrypt-proxy@*
 %dnscrypt ALL= NOPASSWD: /bin/systemctl restart dnscrypt-proxy@*
-%dnscrypt ALL= NOPASSWD: /bin/journalctl -u  dnscrypt-proxy@* 
+%dnscrypt ALL= NOPASSWD: /bin/journalctl --since*-u  dnscrypt-proxy@* 
 
 """
