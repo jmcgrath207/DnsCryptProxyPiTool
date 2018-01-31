@@ -40,7 +40,8 @@ class FabricCommandClass(CsvClass):
         returnCode = run("which dnscrypt-proxy")
         if(returnCode.failed):
             with cd(dnscryptexractdir):
-                run('wget' + dnscryptdownloadlink)
+                run('wget ' + dnscryptdownloadlink)
+                run("mkdir -p " + dnscryptexractdir + "/dnscryptBuild/")
                 run('tar -xf dnscrypt*.tar.gz -C dnscryptBuild --strip-components=1')
             with cd(dnscryptexractdir + "/dnscryptBuild/"):
                 sudo("ldconfig")
