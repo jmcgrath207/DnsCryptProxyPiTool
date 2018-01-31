@@ -17,3 +17,7 @@ DnsCryptPiHoleSetup -h '127.0.0.1' -u 'pi' -p 'raspberry' -e '/tmp' \
  
  
  It best to Flush you logs after running this
+ 
+ 
+ # Default
+ /usr/local/lib/python3.5/dist-packages/DnsCryptPiHoleSetup/DefaultConfig.py
