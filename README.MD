@@ -27,7 +27,9 @@ This tool is meant to be a all in one solution to manage and build your DNS prox
 
 ### Run the command
 ###### note: this will setup d0wn-random-ns1 and d0wn-random-ns2 by default which randomized each querie across 18 different servers.
+
 `DnsCryptPiHoleSetup`
+
 From here you will see a bunch of output from linux commands so you can track what is going on.
 
 When it is finish you will see `DNS crypt Setup has Ran Successfully`
