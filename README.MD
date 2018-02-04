@@ -57,6 +57,9 @@ It best to Flush you logs after running this so it accurate remove old informati
 
  
 #### If you wish to override Default, the Default config is found here:
+
 ` /usr/local/lib/{Python Version}/dist-packages/DnsCryptPiHoleSetup/DefaultConfig.py`
+
+[View Default Config On Repo Here](DnsCryptPiHoleSetup/DefaultConfig.py)
 
 
