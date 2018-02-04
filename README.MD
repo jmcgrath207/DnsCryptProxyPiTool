@@ -12,8 +12,8 @@ This tool is meant to be a all in one solution to manage and build your DNS prox
 - Edits the PiHole Configuration and restarts the DnsMasq Service
 - Montors DnsCrypt Proxies and restarts the individual proxy that have shown a error in the last 10 mins.
 
-	
-![Main Image](https://github.com/jmcgrath207/jmcgrath207/DnsCryptPiHoleSetup/raw/master/img/PiHoleMainWindow.png)
+![ScreenShot](PiHoleMainWindow.png)
+
 
 
 
@@ -30,18 +30,18 @@ This tool is meant to be a all in one solution to manage and build your DNS prox
 From here you will see a bunch of output from linux commands so you can track what is going on.
 
 When it is finish you will see `DNS crypt Setup has Ran Successfully`
-It best to Flush you logs after running this so it accurate remove old information in the pi hole GUI 
+It best to Flush you logs after running this so it accurate remove old information in the pi hole GUI
 
 ## Test your configuration
 ## Note: this is output from the default setup
 https://www.dnsleaktest.com/
-![Main Image](https://github.com/jmcgrath207/jmcgrath207/DnsCryptPiHoleSetup/raw/master/img/DnsLeakTest.png)
+![ScreenShot](DnsLeakTest.png)
 
 
 
 ### Get Stuck? Use Show the help menu
 
-![Main Image](https://github.com/jmcgrath207/jmcgrath207/DnsCryptPiHoleSetup/raw/master/img/DnsCryptPiHoleHelpMenu.png)
+![ScreenShot](DnsCryptPiHoleHelpMenu.png)
 
 
 ##### Example of the default config with command options
