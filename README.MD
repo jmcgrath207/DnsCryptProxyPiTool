@@ -17,7 +17,7 @@ This tool is meant to be a all in one solution to manage and build your DNS prox
 
 
 
-###Getting Started
+## Getting Started
 
 `sudo apt-get install python3-pip`
 #### Note: if you do not use Sudo it will install to the `/home/{username}/.local/bin` which is not available by as a path in Raspbian Strech. Sudo will install the command in `/usr/local/bin/DnsCryptPiHoleSetup`. This make it globally available.
@@ -32,9 +32,11 @@ From here you will see a bunch of output from linux commands so you can track wh
 When it is finish you will see `DNS crypt Setup has Ran Successfully`
 It best to Flush you logs after running this so it accurate remove old information in the pi hole GUI
 
-## Test your configuration
-## Note: this is output from the default setup
-https://www.dnsleaktest.com/
+### Test your configuration
+#### Note: this output is from the default setup
+
+[DnsLeakTest](https://www.dnsleaktest.com/)
+
 ![ScreenShot](DnsLeakTest.png)
 
 
@@ -44,7 +46,7 @@ https://www.dnsleaktest.com/
 ![ScreenShot](DnsCryptPiHoleHelpMenu.png)
 
 
-##### Example of the default config with command options
+#### Example of the default config with command options
 
 `DnsCryptPiHoleSetup -h '127.0.0.1' -u 'pi' -p 'raspberry' -e '/tmp' \
  -d 'https://launchpad.net/ubuntu/+archive/primary/+files/dnscrypt-proxy_1.9.5.orig.tar.gz' \
