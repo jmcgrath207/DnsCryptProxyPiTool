@@ -61,7 +61,9 @@ When it is finish you will see `DNS crypt Setup has Ran Successfully`
  -r '/usr/local/share/dnscrypt-proxy' -n "['d0wn-random-ns1','d0wn-random-ns2']" \
  -l '127.10.10.1' -t '10' -m 'ERROR' `
 
+#### Show Status
 
+` sudo systemctl status -l dnscrypt-proxy@\* `
 
  
 #### If you wish to override Default, the Default config is found here:
