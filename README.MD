@@ -5,6 +5,7 @@ DnsCryptPiHoleSetup is a command line tool to set up Dnscrypt Proxies on PiHole 
 
 This tool is meant to be a all in one solution to manage and build your DNS proxies. If you do not like a setup you have configured you can rerun the tool to install new Dns Crypt proxies with no repercussions.
 
+
 ## Features
 
 - Installs Dnscrypt software if it doesnt existing.
@@ -23,6 +24,11 @@ This tool is meant to be a all in one solution to manage and build your DNS prox
 `sudo apt-get install python3-pip`
 ###### Note: if you do not use Sudo it will install to the `/home/{username}/.local/bin` which is not available by a path in Raspbian Strech by default. Sudo will install the command in `/usr/local/bin/DnsCryptPiHoleSetup`. This make it globally available.
 `sudo pip3 install DnsCryptPiHoleSetup`
+
+
+#### Find your Proxy of choice
+
+[Default Proxy List can be found here]( https://github.com/dyne/dnscrypt-proxy/blob/master/dnscrypt-resolvers.csv)
 
 
 ### Run the command
