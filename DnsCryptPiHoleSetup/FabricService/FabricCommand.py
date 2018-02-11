@@ -17,8 +17,8 @@ class FabricCommandClass(CsvClass):
         Installs required ssh packages
         :return:
         """
-        requiredPackages = "build-essential tcpdump dnsutils libsodium-dev locate " \
-                           "bash-completion libsystemd-dev pkg-config python3-dev rng-tools jq"
+        requiredPackages = "build-essential  " \
+                           "bash-completion libsystemd-dev pkg-config python3-dev  jq"
         returnCode = run("dpkg -l " + requiredPackages)
         if(returnCode.failed):
             sudo('sudo apt-get update')
