@@ -11,10 +11,9 @@ class FabricExecuteClass(FabricCommandClass):
         env.user = user
         env.password = password
         env.warn_only = True
+        env.colorize_errors = True
         self.host = host
-        self.ListenAddresses = None
-
-
+        self.ListenAddress = None
 
 
 
@@ -26,27 +25,15 @@ class FabricExecuteClass(FabricCommandClass):
         FabricCommandClass.CommandBuildDNSCrypt.dnscryptdownloadlink = dnscryptdownloadlink
         execute(self.CommandBuildDNSCrypt, host=self.host)
 
-    def ExecuteAddDnsCryptUser(self):
-        execute(self.CommandAddDnsCryptUser, host=self.host)
 
-    def ExecuteDownloadDnsCryptResolvers(self,dnscryptresolvercsvlink: str,dnscryptresolverdir: str):
-        FabricCommandClass.CommandDownloadDnsCryptResolvers.dnscryptresolvercsvlink = dnscryptresolvercsvlink
-        FabricCommandClass.CommandDownloadDnsCryptResolvers.dnscryptresolverdir = dnscryptresolverdir
-        execute(self.CommandDownloadDnsCryptResolvers, host=self.host)
-
-    def ExecuteCreateDNSCryptProxies(self,dnscryptresolverdir:str,dnscryptresolvernames:str,dnscryptresolvercsvlink:str,
-                                     loopbackstartaddress: str, dnscryptexractdir: str):
-        FabricCommandClass.CommandCreateDNSCryptProxies.dnscryptresolverdir = dnscryptresolverdir
-        FabricCommandClass.CommandCreateDNSCryptProxies.dnscryptresolvernames = dnscryptresolvernames
-        FabricCommandClass.CommandCreateDNSCryptProxies.dnscryptresolvercsvlink = dnscryptresolvercsvlink
+    def ExecuteCreateDNSCryptProxies(self,loopbackstartaddress: str, dnscryptexractdir: str):
         FabricCommandClass.CommandCreateDNSCryptProxies.loopbackstartaddress = loopbackstartaddress
         FabricCommandClass.CommandCreateDNSCryptProxies.dnscryptexractdir = dnscryptexractdir
-        self.ListenAddresses = execute(self.CommandCreateDNSCryptProxies, host=self.host)
+        self.ListenAddress = execute(self.CommandCreateDNSCryptProxies, host=self.host)
 
 
-    def ExecuteChangeDnsMasq(self,dnscryptresolvernames: str):
-        FabricCommandClass.CommandChangeDnsMasq.dnscryptresolvernames = dnscryptresolvernames
-        FabricCommandClass.CommandChangeDnsMasq.ListenAddresses = self.ListenAddresses
+    def ExecuteChangeDnsMasq(self):
+        FabricCommandClass.CommandChangeDnsMasq.ListenAddress = self.ListenAddress
         FabricCommandClass.CommandChangeDnsMasq.host = self.host
         execute(self.CommandChangeDnsMasq, host=self.host)
 

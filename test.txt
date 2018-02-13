@@ -44,12 +44,22 @@ ps ax | grep dnscrypt
 ## Remove Service
 
 
-sudo systemctl stop dnscrypt-proxy@\*
-sudo systemctl disable dnscrypt-proxy@\*
 
+
+sudo systemctl stop dnscrypt-proxy*
+sudo systemctl disable dnscrypt-proxy*
 sudo rm /etc/systemd/system/multi-user.target.wants/dnscrypt-proxy*
 sudo rm /etc/systemd/system/sockets.target.wants/dnscrypt-proxy*
-sudo rm /etc/systemd/system/dnscrypt-proxy*
+sudo rm -f /etc/systemd/system/timers.target.wants/dnscrypt-proxy*
+sudo rm -f /etc/systemd/system/dnscrypt-proxy*
+sudo rm -f /usr/lib/systemd/system/dnscrypt-proxy*
+sudo rm -f /usr/bin/dnscrypt-proxy
+sudo rm -f /etc/dnscrypt-proxy/dnscrypt-proxy.toml
+sudo rm -f /usr/share/doc/dnscrypt-proxy/example-forwarding-rules.txt
+sudo rm -f /usr/share/doc/dnscrypt-proxy/example-blacklist.txt
+sudo rm -f /usr/share/doc/dnscrypt-proxy/example-cloaking-rules.txt
+sudo rm -f /usr/share/licenses/dnscrypt-proxy/LICENSE
+sudo rm -Rf ~/.piHoleRestore
 sudo systemctl daemon-reload
 sudo systemctl reset-failed
 
