@@ -3,7 +3,7 @@ from fabric.contrib.files import append as fabappend, comment
 from fabric.context_managers import env
 import re
 import ipaddress
-from DnsCryptPiHoleSetup.FabricService.StringContainer import DnsCryptService, DnsCryptSocket,\
+from DnsCryptPiHoleService.FabricService.StringContainer import DnsCryptService, DnsCryptSocket,\
     DnsCryptConf, DnsCryptSudoer
 
 

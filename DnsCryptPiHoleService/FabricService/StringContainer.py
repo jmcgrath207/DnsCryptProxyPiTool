@@ -15,27 +15,8 @@ WantedBy=sockets.target
 """
 
 
-DnsCryptService = """
-Description=DNSCrypt client proxy
-Documentation=https://github.com/jedisct1/dnscrypt-proxy/wiki
-Requires=dnscrypt-proxy.socket
-After=network.target
-Before=nss-lookup.target
-Wants=nss-lookup.target
 
-[Service]
-Type=simple
-NonBlocking=true
-ExecStart=/usr/bin/dnscrypt-proxy --config /etc/dnscrypt-proxy/dnscrypt-proxy.toml
-DynamicUser=yes
-
-[Install]
-WantedBy=multi-user.target
-"""
-
-
-
-DnsCryptServiceSysmd235 = """
+DnsCryptService= """
 Description=DNSCrypt client proxy
 Documentation=https://github.com/jedisct1/dnscrypt-proxy/wiki
 Requires=dnscrypt-proxy.socket

@@ -1,4 +1,4 @@
-from DnsCryptPiHoleSetup.FabricService.FabricCommand import FabricCommandClass
+from DnsCryptPiHoleService.FabricService.FabricCommand import FabricCommandClass
 from fabric.context_managers import env
 from fabric.tasks import execute
 
