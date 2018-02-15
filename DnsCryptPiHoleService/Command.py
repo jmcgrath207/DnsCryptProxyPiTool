@@ -19,9 +19,10 @@ from DnsCryptPiHoleService.FabricService.FabricExecute import FabricExecuteClass
 @click.option('--password', '-p', default=password,
               help='Password for host that the Dnscrypt proxy script will ran against', show_default=True,
               cls=ShowDefaultSingleQuote)
+@click.option('--verbose','-v',help='Shows Linux Commands that are executed', show_default=True, is_flag=True)
 @click.pass_context
-def mainCommand(ctx: ClickContextType,host: str, user: str, password: str):
-    ctx.obj['Fabric'] = FabricExecuteClass(user, password, host)
+def mainCommand(ctx: ClickContextType,host: str, user: str, password: str, verbose: bool):
+    ctx.obj['Fabric'] = FabricExecuteClass(user, password, host, verbose)
 
 
 

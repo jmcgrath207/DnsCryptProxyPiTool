@@ -7,17 +7,17 @@ class FabricExecuteClass(FabricCommandClass):
 
 
     def __init__(self,user: str, password: str,
-                 host: str):
-
-        output['user'] = False
-        output['aborts'] = False
-        output['running'] = False
-        output['exceptions'] = False
-        output['warnings'] = False
-        output['stderr'] = False
-        output['stdout'] = False
-        output['status'] = False
-        output['debug'] = False
+                 host: str,verbose: bool):
+        if not verbose:
+            output['user'] = False
+            output['aborts'] = False
+            output['running'] = False
+            output['exceptions'] = False
+            output['warnings'] = False
+            output['stderr'] = False
+            output['stdout'] = False
+            output['status'] = False
+            output['debug'] = False
 
 
         env.user = user
