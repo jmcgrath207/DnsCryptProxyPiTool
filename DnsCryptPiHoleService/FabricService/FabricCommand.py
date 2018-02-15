@@ -3,8 +3,10 @@ from fabric.contrib.files import append as fabappend, comment
 from fabric.context_managers import env
 import re
 import ipaddress
+import click
 from DnsCryptPiHoleService.FabricService.StringContainer import DnsCryptService, DnsCryptSocket,\
     DnsCryptConf, DnsCryptSudoer
+
 
 
 
@@ -22,6 +24,7 @@ class FabricCommandClass(object):
         returnCode = run("dpkg -l " + requiredPackages)
         if(returnCode.failed):
             sudo('sudo apt-get update')
+            click.echo(click.style('Installing system dependencies: {0} for DNS Crypt Proxy 2'.format(requiredPackages),fg='yellow'))
             sudo('apt-get -y install ' + requiredPackages)
 
 
@@ -34,17 +37,27 @@ class FabricCommandClass(object):
         """
 
 
-
         dnscryptexractdir = FabricCommandClass.CommandBuildDNSCrypt.dnscryptexractdir
         dnscryptdownloadlink = FabricCommandClass.CommandBuildDNSCrypt.dnscryptdownloadlink
+
+
         returnCode = run("which dnscrypt-proxy")
         if(returnCode.failed):
             with cd(dnscryptexractdir):
+
+                click.echo(
+                    click.style('Downloading DNS Crypt Proxy 2 from: {0}'.format(dnscryptdownloadlink), fg='yellow'))
+
+                click.echo(
+                    click.style('Building DNS Crypt Proxy 2 at path: {0}/dnscryptBuild/'.format(dnscryptexractdir),
+                                fg='yellow'))
+
                 run('wget ' + dnscryptdownloadlink)
                 run("mkdir -p " + dnscryptexractdir + "/dnscryptBuild/")
                 run('tar -xf dnscrypt*.tar.gz -C dnscryptBuild --strip-components=1')
         else:
-            raise ValueError("Dns Crypt is already installed at " + str(returnCode.stdout))
+          raise  click.ClickException(click.style("Dns Crypt Proxy 2 is already installed at " + re.sub( r'.*\r\n',"",returnCode.stdout) + \
+                ". Aborting Install",fg='red',bold=True))
 
 
 
@@ -63,15 +76,9 @@ class FabricCommandClass(object):
 
         # Find a Available Socket LoopBack Address and Create Socket Files
 
-
+        click.echo(click.style('finding available loopback address and port for dnscrypt-proxy.socket', fg='yellow'))
         runningSockets = sudo("ss -nlut | awk 'NR>1 {print  $5}'")
         runningSockets = re.sub(r".*[a-zA-Z]+\S","",runningSockets).split()
-
-
-
-
-
-
 
 
         with cd(dnscryptexractdir + "/dnscryptBuild/"):
@@ -84,15 +91,21 @@ class FabricCommandClass(object):
                     fabappend("dnscrypt-proxy.socket", DnsCryptSocket.format(loopbackstartaddress))
                     runningSockets.append(loopbackstartaddress + ":41")
                     ListenAddress = loopbackstartaddress
+                    click.echo(click.style('Using ' + loopbackstartaddress + ':41 for dnscrypt-proxy.socket',
+                                           fg='yellow'))
                     break
                 loopbackstartaddress = str(ipaddress.ip_address(loopbackstartaddress) + 1)
                 if loopbackstartaddress == '127.255.255.254':
-                    raise ValueError("No Ip address available in the 127.0.0.0/8 IPV4 Range")
+                    click.ClickException(click.style("No Ip address available in the 127.0.0.0/8 IPV4 Range",
+                                                     fg='red',bold=True))
+
 
 
 
 
             #Edit Toml file
+            click.echo(click.style('Preparing dnscrypt-proxy.toml file',fg='yellow'))
+
 
             run(r"sed -i 's|\['\''127\.0\.0\.1:53'\'', '\''\[::1\]:53'\''\]|\[\]|g' example-dnscrypt-proxy.toml")
             run(r"sed -i 's|'\''dnscrypt-proxy\.log'\''|'\''/var/log/dnscrypt-proxy/dnscrypt-proxy\.log'\''|g' example-dnscrypt-proxy.toml")
@@ -110,6 +123,10 @@ class FabricCommandClass(object):
 
 
             # Create Service Unit and Install Files
+            click.echo(click.style('Creating dnscrypt-proxy.service',fg='yellow'))
+            click.echo(click.style('Creating dnscrypt-proxy.socket',fg='yellow'))
+            click.echo(click.style('Installing Dns Crypt Proxy 2',fg='yellow'))
+
             fabappend('dnscrypt-proxy.service', DnsCryptService)
             sudo('install -Dm755 "dnscrypt-proxy" "/usr/bin/dnscrypt-proxy"')
             sudo('install -Dm644 "example-dnscrypt-proxy.toml" "/etc/dnscrypt-proxy/dnscrypt-proxy.toml"')
@@ -122,9 +139,10 @@ class FabricCommandClass(object):
 
 
 
-
-
             # Enable and Start the DNS Proxy
+            click.echo(click.style('Enabling and Starting dnscrypt-proxy.socket and dnscrypt-proxy.service',
+                                   fg='yellow'))
+
             sudo("systemctl enable dnscrypt-proxy.socket")
             sudo("systemctl enable dnscrypt-proxy.service")
             sudo("systemctl start dnscrypt-proxy.socket")
@@ -151,16 +169,30 @@ class FabricCommandClass(object):
         ListenAddress = ListenAddress[host]
 
 
+        #Creating DNS Crypt Proxy 2 dnsmasq config.
 
+        click.echo(click.style('Creating DNS Crypt Proxy 2 dnsmasq config',
+                               fg='yellow'))
         with cd("/etc/dnsmasq.d"):
             sudo("rm -f 02-dnscrypt.conf")
             fabappend('02-dnscrypt.conf', DnsCryptConf.format("server=" + ListenAddress + "#41"),use_sudo=True)
 
 
-        comment('/etc/dnsmasq.d/01-pihole.conf', r'server=.*', use_sudo=True, backup='.old')
-        comment('/etc/pihole/setupVars.conf', r'PIHOLE_DNS.*',use_sudo=True,backup='.old')
+
+
+        # Comment out the Old Config and create a backup copy of the old config
+        click.echo(click.style('Creating Backup copy of the orignal PiHole config and commented out the old DNS servers',
+                               fg='yellow'))
+        comment('/etc/dnsmasq.d/01-pihole.conf', r'^server=.*', use_sudo=True, backup='.old')
+        comment('/etc/pihole/setupVars.conf', r'^PIHOLE_DNS.*',use_sudo=True,backup='.old')
+
+
+
+
 
         # Moving Restore files due to conflict with dnsmasq service
+        click.echo(click.style('Moving PiHole backup config to /home/{0}/.piHoleRestore/'.format(env.user),
+                               fg='yellow'))
         run("mkdir -p /home/{0}/.piHoleRestore".format(env.user))
         sudo("mv /etc/pihole/setupVars.conf.old /home/{0}/.piHoleRestore/.".format(env.user))
         sudo("mv /etc/dnsmasq.d/01-pihole.conf.old /home/{0}/.piHoleRestore/.".format(env.user))
@@ -171,9 +203,54 @@ class FabricCommandClass(object):
 
 
 
-
+        click.echo(click.style('Restarting dnsmasq service',
+                               fg='yellow'))
         sudo("service dnsmasq restart")
-        print(" DNS crypt Setup has Ran Successfully")
+        click.echo(click.style('DnsCrypt-Proxy 2 install is Complete', fg='green', bold=True))
+
+
+
+    def CommandUninstall(self):
+        """
+        Uninstall the DNS Crypt Proxy 2 that was install by this python client,
+        Restores the Files of the orignal PI Hole Config,
+        then restarts the DNS
+
+
+        :return: None
+        """
+        returnCode = run("which dnscrypt-proxy")
+        if(returnCode.succeeded):
+            click.echo(click.style('Uninstalling DnsCrypt-Proxy 2....', fg='yellow'))
+            sudo("systemctl stop dnscrypt-proxy*")
+            sudo("systemctl disable dnscrypt-proxy*")
+            sudo("rm /etc/systemd/system/multi-user.target.wants/dnscrypt-proxy*")
+            sudo("rm /etc/systemd/system/sockets.target.wants/dnscrypt-proxy*")
+            sudo("rm -f /etc/systemd/system/timers.target.wants/dnscrypt-proxy*")
+            sudo("rm -f /etc/systemd/system/dnscrypt-proxy*")
+            sudo("rm -f /usr/lib/systemd/system/dnscrypt-proxy*")
+            sudo("rm -f /usr/bin/dnscrypt-proxy")
+            sudo("rm -Rf /etc/dnscrypt-proxy")
+            sudo("rm -f /usr/share/doc/dnscrypt-proxy/example-forwarding-rules.txt")
+            sudo("rm -f /usr/share/doc/dnscrypt-proxy/example-blacklist.txt")
+            sudo("rm -f /usr/share/doc/dnscrypt-proxy/example-cloaking-rules.txt")
+            sudo("rm -f /usr/share/licenses/dnscrypt-proxy/LICENSE")
+            sudo("systemctl daemon-reload")
+            sudo("systemctl reset-failed")
+            sudo("mv  /home/{0}/.piHoleRestore/setupVars.conf.old /etc/pihole/setupVars.conf".format(env.user))
+            sudo("mv  /home/{0}/.piHoleRestore/01-pihole.conf.old /etc/dnsmasq.d/01-pihole.conf".format(env.user))
+            sudo("rm -Rf /home/{0}/.piHoleRestore".format(env.user))
+            sudo("rm -f /etc/dnsmasq.d/02-dnscrypt.conf")
+            sudo("service dnsmasq restart")
+
+
+            click.echo(click.style('DnsCrypt-Proxy 2 Uninstall is Complete', fg='green', bold=True))
+            click.echo(click.style('The Original PiHole Config has been restored', fg='green', bold=True))
+            click.echo(click.style('The Dnsmasq Service has been restarted', fg='green', bold=True))
+        else:
+           raise click.ClickException(click.style("DnsCrypt-Proxy 2 is not installed. Aborting Uninstall",
+                                             fg='red', bold=True))
+
 
 
 

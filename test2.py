@@ -1,5 +1,6 @@
+
 import click
-from click import types
+
 
 all_colors = 'black', 'red', 'green', 'yellow', 'blue', 'magenta', \
              'cyan', 'white'
@@ -23,7 +24,6 @@ def cli():
 
     click.echo(click.style('I am blinking', blink=True))
     click.echo(click.style('I am underlined', underline=True))
-
 
 
 cli()

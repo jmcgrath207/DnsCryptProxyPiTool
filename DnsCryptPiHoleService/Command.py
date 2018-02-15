@@ -52,6 +52,14 @@ def install(ctx: ClickContextType,dnscryptexractdir: str,dnscryptdownloadlink: s
 
 
 
+@mainCommand.command()
+@click.confirmation_option(prompt='Are you sure you want to uninstall DnsCrypt-Proxy 2?')
+@click.pass_context
+def uninstall(ctx: ClickContextType):
+    Fec = ctx.obj['Fabric']
+    Fec.ExecuteUninstall()
+
+
 
 
 
