@@ -107,6 +107,9 @@ class FabricCommandClass(object):
             click.echo(click.style('Preparing dnscrypt-proxy.toml file',fg='yellow'))
 
 
+            # Remove all Comments from Log files
+            run(r'perl -i -p -e "s/#(?=.*log.*\')//g" example-dnscrypt-proxy.toml')
+
             run(r"sed -i 's|\['\''127\.0\.0\.1:53'\'', '\''\[::1\]:53'\''\]|\[\]|g' example-dnscrypt-proxy.toml")
             run(r"sed -i 's|'\''dnscrypt-proxy\.log'\''|'\''/var/log/dnscrypt-proxy/dnscrypt-proxy\.log'\''|g' example-dnscrypt-proxy.toml")
             run(r"sed -i 's|'\''forwarding-rules\.txt'\''|'\''/etc/dnscrypt-proxy/forwarding-rules\.txt'\''|g' example-dnscrypt-proxy.toml")
@@ -136,6 +139,8 @@ class FabricCommandClass(object):
             sudo('install -Dm644 "dnscrypt-proxy.service" "/etc/systemd/system/dnscrypt-proxy.service"')
             sudo('install -Dm644 "dnscrypt-proxy.socket" "/etc/systemd/system/dnscrypt-proxy.socket"')
             sudo('install -Dm644 "LICENSE" "/usr/share/licenses/dnscrypt-proxy/LICENSE"')
+            sudo('install -dm777 /var/log/dnscrypt-proxy')
+            sudo(r'cat /etc/dnscrypt-proxy/dnscrypt-proxy.toml | grep -oP "(?=\/).*\.log" | xargs -I \% bash -c "sudo touch \%; sudo chmod 766 \%"')
 
 
 
@@ -206,6 +211,9 @@ class FabricCommandClass(object):
         click.echo(click.style('Restarting dnsmasq service',
                                fg='yellow'))
         sudo("service dnsmasq restart")
+
+        click.echo(click.style('DnsCrypt-Proxy 2 located at located at /var/log/dnscrypt-proxy/ ', fg='green', bold=True))
+        click.echo(click.style('DnsCrypt-Proxy 2 config located at /etc/dnscrypt-proxy/dnscrypt-proxy.toml ', fg='green', bold=True))
         click.echo(click.style('DnsCrypt-Proxy 2 install is Complete', fg='green', bold=True))
 
 
@@ -231,13 +239,18 @@ class FabricCommandClass(object):
             sudo("rm -f /usr/lib/systemd/system/dnscrypt-proxy*")
             sudo("rm -f /usr/bin/dnscrypt-proxy")
             sudo("rm -Rf /etc/dnscrypt-proxy")
+            sudo("rm -Rf /var/log/dnscrypt-proxy")
             sudo("rm -f /usr/share/doc/dnscrypt-proxy/example-forwarding-rules.txt")
             sudo("rm -f /usr/share/doc/dnscrypt-proxy/example-blacklist.txt")
             sudo("rm -f /usr/share/doc/dnscrypt-proxy/example-cloaking-rules.txt")
             sudo("rm -f /usr/share/licenses/dnscrypt-proxy/LICENSE")
             sudo("systemctl daemon-reload")
             sudo("systemctl reset-failed")
+
+            click.echo(click.style("Moving /home/{0}/.piHoleRestore/setupVars.conf.old to /etc/pihole/setupVars.conf".format(env.user),fg='yellow'))
             sudo("mv  /home/{0}/.piHoleRestore/setupVars.conf.old /etc/pihole/setupVars.conf".format(env.user))
+
+            click.echo(click.style("Moving /home/{0}/.piHoleRestore/01-pihole.conf.old to /etc/dnsmasq.d/01-pihole.conf".format(env.user),fg='yellow'))
             sudo("mv  /home/{0}/.piHoleRestore/01-pihole.conf.old /etc/dnsmasq.d/01-pihole.conf".format(env.user))
             sudo("rm -Rf /home/{0}/.piHoleRestore".format(env.user))
             sudo("rm -f /etc/dnsmasq.d/02-dnscrypt.conf")
