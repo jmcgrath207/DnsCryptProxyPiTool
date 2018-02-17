@@ -5,19 +5,19 @@ from setuptools import setup, find_packages
 
 setup(
     name='DnsCryptPiHoleSetup',
-    version='0.14',
+    version='0.15',
     url='https://github.com/jmcgrath207/DnsCryptPiHoleSetup',
     license='MIT License',
     author='John McGrath',
     author_email='john.mcgrath207@gmail.com',
     description='DnsCrypt Setup for PiHole Raspberry Pi 3',
     python_requires=">=3.5",
-    install_requires=['Fabric3==1.13.1.post1','Click==6.7','click-help-colors==0.4'],
+    install_requires=['Fabric3==1.14.post1','Click==6.7','click-help-colors==0.4'],
     packages=find_packages(exclude=["*.tests", "*.tests.*", "tests.*", "tests"]),
     include_package_data=False,
     entry_points={
         'console_scripts': [
-            'DnsCryptPiHoleSetup=DnsCryptPiHoleSetup.DnsCryptPiHoleSetup:cli',
+            'dnscryptpiholesetup=DnsCryptPiHoleService.Command:mainCommand',
         ],
     },
     classifiers=[

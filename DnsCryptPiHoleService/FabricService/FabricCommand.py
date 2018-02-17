@@ -1,6 +1,6 @@
-from fabric.api import sudo, cd, run
+from fabric.api import sudo, cd, run, open_shell
 from fabric.contrib.files import append as fabappend, comment
-from fabric.context_managers import env
+from fabric.context_managers import env, output
 import re
 import ipaddress
 import click
@@ -173,6 +173,7 @@ class FabricCommandClass(object):
 
         ListenAddress = FabricCommandClass.CommandChangeDnsMasq.ListenAddress
         host = FabricCommandClass.CommandChangeDnsMasq.host
+        dnscryptexractdir = FabricCommandClass.CommandChangeDnsMasq.dnscryptexractdir
 
         #Extract Loopback Address
         ListenAddress = ListenAddress[host]
@@ -215,6 +216,12 @@ class FabricCommandClass(object):
         click.echo(click.style('Restarting dnsmasq service',
                                fg='yellow'))
         sudo("service dnsmasq restart")
+
+
+        click.echo(click.style('Removed Build Directory at {0}/dnscryptBuild/'.format(dnscryptexractdir),
+                               fg='yellow'))
+
+        sudo('rm -Rf {0}/dnscryptBuild/'.format(dnscryptexractdir))
 
         click.echo(click.style('DnsCrypt-Proxy 2 located at located at /var/log/dnscrypt-proxy/ ', fg='green', bold=True))
         click.echo(click.style('DnsCrypt-Proxy 2 config located at /etc/dnscrypt-proxy/dnscrypt-proxy.toml ', fg='green', bold=True))
@@ -270,36 +277,62 @@ class FabricCommandClass(object):
 
 
 
-
-    def CommandCreateCronJob(self):
-        """
-        Create Cron Job that Restart a Proxy server when it see a message from the
-        Dns Crypt Service
-
-        Defaults are every 10 minutes and Look for Message that Contain Error
-
-        :return: None
-        """
-        cronjobminutes = FabricCommandClass.CommandCreateCronJob.cronjobminutes
-        cronjobmessage = FabricCommandClass.CommandCreateCronJob.cronjobmessage
+    def CommandShowDefaultConfigLocation(self):
+        libInstallPath = run('pip3 show fabric3 | grep -Po "(?<=Location:\s).*"')
+        location = re.sub(r'.*\r\n', "", libInstallPath.stdout)
+        click.echo(click.style(location, fg='green',bold=True))
 
 
-        with cd("/etc/sudoers.d"):
-            sudo("rm -f DnsCryptSudoer")
-            fabappend('DnsCryptSudoer', DnsCryptSudoer,use_sudo=True)
+    # Disabled until issue is fixed https://github.com/fabric/fabric/issues/1719
+    #def CommandEditDefaultConfig(self):
+    #    open_shell(command='nano  /home/pi/.piHoleRestore/01-pihole.conf.old; exit')
 
-        with cd("/etc/cron.d"):
-            sudo("rm -f dnscryptCron")
 
-        sudo(r"""
-        sudo echo "*/{0} * * * * dnscrypt sudo journalctl --since \\"{0} minutes ago\\" -u  dnscrypt-proxy* -o json | \
-        jq  '. | select(.MESSAGE | tostring |contains(\\"{1}\\")) | \
-        ._SYSTEMD_UNIT' | sort | uniq | grep -Pho '(?<=\\").*(?=\.service)' | \
-        xargs -I \% bash -c 'sudo systemctl stop \%.socket;sudo systemctl stop \%.service;sudo systemctl start \%.socket;sudo systemctl start \%.service'" | \
-        sudo tee -a /etc/cron.d/dnscryptCron > /dev/null 2>&1
-        """.format(cronjobminutes,cronjobmessage))
 
-        print(" DNS crypt Setup Cron Watch Dog has Ran Successfully")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    # New DnsCrypt Proxy seems to self recover well for now. May Need in the future
+    #def CommandCreateCronJob(self):
+    #    """
+    #    Create Cron Job that Restart a Proxy server when it see a message from the
+    #    Dns Crypt Service
+    #
+    #    Defaults are every 10 minutes and Look for Message that Contain Error
+    #
+    #    :return: None
+    #    """
+    #    cronjobminutes = FabricCommandClass.CommandCreateCronJob.cronjobminutes
+    #    cronjobmessage = FabricCommandClass.CommandCreateCronJob.cronjobmessage
+    #
+    #
+    #    with cd("/etc/sudoers.d"):
+    #        sudo("rm -f DnsCryptSudoer")
+    #        fabappend('DnsCryptSudoer', DnsCryptSudoer,use_sudo=True)
+    #
+    #    with cd("/etc/cron.d"):
+    #        sudo("rm -f dnscryptCron")
+    #
+    #    sudo(r"""
+    #    sudo echo "*/{0} * * * * dnscrypt sudo journalctl --since \\"{0} minutes ago\\" -u  dnscrypt-proxy* -o json | \
+    #    jq  '. | select(.MESSAGE | tostring |contains(\\"{1}\\")) | \
+    #    ._SYSTEMD_UNIT' | sort | uniq | grep -Pho '(?<=\\").*(?=\.service)' | \
+    #    xargs -I \% bash -c 'sudo systemctl stop \%.socket;sudo systemctl stop \%.service;sudo systemctl start \%.socket;sudo systemctl start \%.service'" | \
+    #    sudo tee -a /etc/cron.d/dnscryptCron > /dev/null 2>&1
+    #    """.format(cronjobminutes,cronjobmessage))
+    #
+    #    print(" DNS crypt Setup Cron Watch Dog has Ran Successfully")
 
 
 

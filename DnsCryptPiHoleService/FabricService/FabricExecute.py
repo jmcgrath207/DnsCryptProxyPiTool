@@ -44,17 +44,28 @@ class FabricExecuteClass(FabricCommandClass):
         self.ListenAddress = execute(self.CommandCreateDNSCryptProxies, host=self.host)
 
 
-    def ExecuteChangeDnsMasq(self):
+    def ExecuteChangeDnsMasq(self, dnscryptexractdir: str):
         FabricCommandClass.CommandChangeDnsMasq.ListenAddress = self.ListenAddress
         FabricCommandClass.CommandChangeDnsMasq.host = self.host
+        FabricCommandClass.CommandChangeDnsMasq.dnscryptexractdir = dnscryptexractdir
         execute(self.CommandChangeDnsMasq, host=self.host)
 
     def ExecuteUninstall(self):
         execute(self.CommandUninstall, host=self.host)
 
 
-    def ExecuteCreateCronJob(self,cronjobminutes: str,cronjobmessage: str):
-        FabricCommandClass.CommandCreateCronJob.cronjobminutes = cronjobminutes
-        FabricCommandClass.CommandCreateCronJob.cronjobmessage = cronjobmessage
-        execute(self.CommandCreateCronJob, host=self.host)
+    def ExecuteShowDefaultConfigLocation(self):
+        execute(self.CommandShowDefaultConfigLocation, host=self.host)
+
+
+
+    # Disabled until issue is fixed https://github.com/fabric/fabric/issues/1719
+    #def ExecuteEditDefaultConfig(self):
+    #    execute(self.CommandEditDefaultConfig, host=self.host)
+
+    # New DnsCrypt Proxy seems to self recover well for now. May Need in the future
+    #def ExecuteCreateCronJob(self,cronjobminutes: str,cronjobmessage: str):
+    #    FabricCommandClass.CommandCreateCronJob.cronjobminutes = cronjobminutes
+    #    FabricCommandClass.CommandCreateCronJob.cronjobmessage = cronjobmessage
+    #    execute(self.CommandCreateCronJob, host=self.host)
 

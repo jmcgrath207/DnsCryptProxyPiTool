@@ -47,7 +47,8 @@ def install(ctx: ClickContextType,dnscryptexractdir: str,dnscryptdownloadlink: s
     Fec.ExecuteSystemPackages()
     Fec.ExecuteBuildDNSCrypt(dnscryptexractdir,dnscryptdownloadlink)
     Fec.ExecuteCreateDNSCryptProxies(loopbackstartaddress, dnscryptexractdir)
-    Fec.ExecuteChangeDnsMasq()
+    Fec.ExecuteChangeDnsMasq(dnscryptexractdir)
+    ctx.exit()
 
 
 
@@ -59,6 +60,28 @@ def install(ctx: ClickContextType,dnscryptexractdir: str,dnscryptdownloadlink: s
 def uninstall(ctx: ClickContextType):
     Fec = ctx.obj['Fabric']
     Fec.ExecuteUninstall()
+    ctx.exit()
+
+
+
+
+#@click.option('--editdefault','-z',help='Edit Default Config of dnscryptpiholesetup command', show_default=True, is_flag=True)
+@mainCommand.command()
+@click.option('--showdefaultconfiglocation','-z',help='show location of default config file for dnscryptpiholesetup command', show_default=True, is_flag=True)
+@click.pass_context
+def config(ctx: ClickContextType,showdefaultconfiglocation: bool ):
+    Fec = ctx.obj['Fabric']
+
+    if showdefaultconfiglocation:
+        Fec.ExecuteShowDefaultConfigLocation()
+        ctx.exit()
+    # Disabled until issue is fixed https://github.com/fabric/fabric/issues/1719
+    #elif editdefault:
+    #    Fec.ExecuteEditDefaultConfig()
+    #    ctx.exit()
+    else:
+        click.echo(config.get_help(ctx))
+        ctx.exit()
 
 
 
