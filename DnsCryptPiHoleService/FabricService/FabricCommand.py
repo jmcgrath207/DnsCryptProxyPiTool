@@ -221,7 +221,7 @@ class FabricCommandClass(object):
         click.echo(click.style('Removed Build Directory at {0}/dnscryptBuild/'.format(dnscryptexractdir),
                                fg='yellow'))
 
-        sudo('rm -Rf {0}/dnscryptBuild/'.format(dnscryptexractdir))
+        sudo('rm -Rf {0}/dnscrypt*'.format(dnscryptexractdir))
 
         click.echo(click.style('DnsCrypt-Proxy 2 located at located at /var/log/dnscrypt-proxy/ ', fg='green', bold=True))
         click.echo(click.style('DnsCrypt-Proxy 2 config located at /etc/dnscrypt-proxy/dnscrypt-proxy.toml ', fg='green', bold=True))
@@ -241,6 +241,8 @@ class FabricCommandClass(object):
         returnCode = run("which dnscrypt-proxy")
         if(returnCode.succeeded):
             click.echo(click.style('Uninstalling DnsCrypt-Proxy 2....', fg='yellow'))
+            sudo("apt-get purge -y dnscrypt-proxy")
+            sudo("dpkg --purge --force dnscrypt-proxy")
             sudo("systemctl stop dnscrypt-proxy*")
             sudo("systemctl disable dnscrypt-proxy*")
             sudo("rm /etc/systemd/system/multi-user.target.wants/dnscrypt-proxy*")
