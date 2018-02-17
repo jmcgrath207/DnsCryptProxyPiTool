@@ -30,8 +30,13 @@ NonBlocking=true
 ExecStart=/usr/bin/dnscrypt-proxy --config /etc/dnscrypt-proxy/dnscrypt-proxy.toml
 DynamicUser=yes
 ProtectHome=true
-CacheDirectory=dnscrypt-proxy
-LogsDirectory=dnscrypt-proxy
+#Disabled until systemd 235 is released
+#CacheDirectory=dnscrypt-proxy
+#LogsDirectory=dnscrypt-proxy
+
+# Used for Install logs in /var/log/dnscrypt-proxy/
+# Logs Default to JournalCtl by default
+#ReadWritePaths=/var/log/dnscrypt-proxy/
 
 [Install]
 WantedBy=multi-user.target

@@ -106,9 +106,10 @@ class FabricCommandClass(object):
             #Edit Toml file
             click.echo(click.style('Preparing dnscrypt-proxy.toml file',fg='yellow'))
 
-
+            # install Logs setup to log to /var/log/dnscrypt-proxy
             # Remove all Comments from Log files
-            run(r'perl -i -p -e "s/#(?=.*log.*\')//g" example-dnscrypt-proxy.toml')
+            # Currently disabled since the same logs are provide through systemd
+            #run(r'perl -i -p -e "s/#(?=.*log.*\')//g" example-dnscrypt-proxy.toml')
 
             run(r"sed -i 's|\['\''127\.0\.0\.1:53'\'', '\''\[::1\]:53'\''\]|\[\]|g' example-dnscrypt-proxy.toml")
             run(r"sed -i 's|'\''dnscrypt-proxy\.log'\''|'\''/var/log/dnscrypt-proxy/dnscrypt-proxy\.log'\''|g' example-dnscrypt-proxy.toml")
@@ -139,8 +140,11 @@ class FabricCommandClass(object):
             sudo('install -Dm644 "dnscrypt-proxy.service" "/etc/systemd/system/dnscrypt-proxy.service"')
             sudo('install -Dm644 "dnscrypt-proxy.socket" "/etc/systemd/system/dnscrypt-proxy.socket"')
             sudo('install -Dm644 "LICENSE" "/usr/share/licenses/dnscrypt-proxy/LICENSE"')
-            sudo('install -dm777 /var/log/dnscrypt-proxy')
-            sudo(r'cat /etc/dnscrypt-proxy/dnscrypt-proxy.toml | grep -oP "(?=\/).*\.log" | xargs -I \% bash -c "sudo touch \%; sudo chmod 766 \%"')
+
+            # install Logs setup to log to /var/log/dnscrypt-proxy
+            # Currently disabled since the same logs are provide through systemd
+            #sudo('install -dm777 /var/log/dnscrypt-proxy')
+            #sudo(r'cat /etc/dnscrypt-proxy/dnscrypt-proxy.toml | grep -oP "(?=\/).*\.log" | xargs -I \% bash -c "sudo touch \%; sudo chmod 766 \%"')
 
 
 
