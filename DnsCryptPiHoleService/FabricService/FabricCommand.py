@@ -328,7 +328,16 @@ class FabricCommandClass(object):
         open_shell(command= editor + ' /home/pi/.piHoleRestore/01-pihole.conf.old; exit')
 
 
+    def CommandRestartConfig(self):
 
+        sudo("systemctl stop dnscrypt-proxy.service")
+        sudo("systemctl stop dnscrypt-proxy.socket")
+        sudo("service dnsmasq stop")
+
+
+        sudo("systemctl start dnscrypt-proxy.socket")
+        sudo("systemctl start dnscrypt-proxy.service")
+        sudo("service dnsmasq start")
 
 
 

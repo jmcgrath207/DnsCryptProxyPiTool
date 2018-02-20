@@ -73,9 +73,11 @@ def uninstall(ctx: ClickContextType):
 @click.option('--showdnscryptproxyconfig','-z',help='show location of Default Config of DnsCrypt Proxy  Toml File', show_default=True, is_flag=True)
 @click.option('--showdnscryptpiholesetupconfig','-x',help='show location of Default Config of dnscryptpiholesetup command', show_default=True, is_flag=True)
 @click.option('--editor','-t',help="Supply which Editor you want to use ex. -t 'nano' -y",default=editor, show_default=True,cls=ShowDefaultSingleQuote)
+@click.option('--restartconfig','-s',help='Restarts DnsMasq, Dnscrypt Service and Proxy. Use this after changing the  Dnscrypt Toml Config ', show_default=True, is_flag=True)
 @click.pass_context
 def admin(ctx: ClickContextType,showdnscryptproxyconfig: bool, showdnscryptpiholesetupconfig: bool,
-           editdnscryptproxyconfig: bool, editdnscryptpiholesetupconfig: bool,editor: str):
+           editdnscryptproxyconfig: bool, editdnscryptpiholesetupconfig: bool,editor: str,
+          restartconfig: bool):
     Fec = ctx.obj['Fabric']
 
     if showdnscryptproxyconfig:
@@ -92,6 +94,10 @@ def admin(ctx: ClickContextType,showdnscryptproxyconfig: bool, showdnscryptpihol
 
     elif editdnscryptproxyconfig:
         Fec.ExecuteEditDnsCryptProxyConfig(editor)
+        ctx.exit()
+
+    elif restartconfig:
+        Fec.ExecuteRestartConfig()
         ctx.exit()
 
     else:

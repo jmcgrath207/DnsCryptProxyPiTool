@@ -72,5 +72,9 @@ class FabricExecuteClass(FabricCommandClass):
         FabricCommandClass.CommandShowDnsCryptPiHoleSetupConfig.editor = editor
         execute(self.CommandShowDnsCryptPiHoleSetupConfig, host=self.host)
 
+    def ExecuteRestartConfig(self):
+        execute(self.CommandRestartConfig, host=self.host)
+
+
 
 
