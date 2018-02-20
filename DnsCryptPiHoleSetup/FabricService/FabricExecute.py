@@ -1,4 +1,4 @@
-from DnsCryptPiHoleService.FabricService.FabricCommand import FabricCommandClass
+from DnsCryptPiHoleSetup.FabricService.FabricCommand import FabricCommandClass
 from fabric.context_managers import env, output
 from fabric.tasks import execute
 
@@ -69,8 +69,8 @@ class FabricExecuteClass(FabricCommandClass):
         execute(self.CommandShowDnsCryptPiHoleSetupConfig, host=self.host)
 
     def ExecuteEditDnsCryptPiHoleSetupConfig(self,editor: str):
-        FabricCommandClass.CommandShowDnsCryptPiHoleSetupConfig.editor = editor
-        execute(self.CommandShowDnsCryptPiHoleSetupConfig, host=self.host)
+        FabricCommandClass.CommandEditDnsCryptPiHoleSetupConfig.editor = editor
+        execute(self.CommandEditDnsCryptPiHoleSetupConfig, host=self.host)
 
     def ExecuteRestartConfig(self):
         execute(self.CommandRestartConfig, host=self.host)

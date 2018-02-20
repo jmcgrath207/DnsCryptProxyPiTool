@@ -1,10 +1,10 @@
-from DnsCryptPiHoleService.DefaultConfig import host,  password, user,dnscryptdownloadlink,\
+from DnsCryptPiHoleSetup.DefaultConfig import host,  password, user,dnscryptdownloadlink,\
 dnscryptexractdir,loopbackstartaddress, editor
-from DnsCryptPiHoleService import ClickContextType
+from DnsCryptPiHoleSetup import ClickContextType
 from click_help_colors import HelpColorsGroup
-from DnsCryptPiHoleService.ClickHelperClasses import ShowDefaultSingleQuote
+from DnsCryptPiHoleSetup.ClickHelperClasses import ShowDefaultSingleQuote
 import click
-from DnsCryptPiHoleService.FabricService.FabricExecute import FabricExecuteClass
+from DnsCryptPiHoleSetup.FabricService.FabricExecute import FabricExecuteClass
 
 
 
@@ -22,6 +22,9 @@ from DnsCryptPiHoleService.FabricService.FabricExecute import FabricExecuteClass
 @click.option('--verbose','-v',help='Shows Linux Commands that are executed', show_default=True, is_flag=True)
 @click.pass_context
 def mainCommand(ctx: ClickContextType,host: str, user: str, password: str, verbose: bool):
+
+    # Creates Object when not ran by the main function
+    ctx.obj = {}
     ctx.obj['Fabric'] = FabricExecuteClass(user, password, host, verbose)
 
 
@@ -44,11 +47,11 @@ def mainCommand(ctx: ClickContextType,host: str, user: str, password: str, verbo
 def install(ctx: ClickContextType,dnscryptexractdir: str,dnscryptdownloadlink: str,
             loopbackstartaddress: str):
     Fec = ctx.obj['Fabric']
-    Fec.ExecuteFabric3OpenShellMonkeyPatch()
     Fec.ExecuteSystemPackages()
     Fec.ExecuteBuildDNSCrypt(dnscryptexractdir,dnscryptdownloadlink)
     Fec.ExecuteCreateDNSCryptProxies(loopbackstartaddress, dnscryptexractdir)
     Fec.ExecuteChangeDnsMasq(dnscryptexractdir)
+    Fec.ExecuteFabric3OpenShellMonkeyPatch()
     ctx.exit()
 
 

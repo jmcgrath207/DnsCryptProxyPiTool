@@ -76,6 +76,6 @@ When it is finish you will see `DNS crypt Setup has Ran Successfully`
 
 ` /usr/local/lib/{Python Version}/dist-packages/DnsCryptPiHoleSetup/DefaultConfig.py`
 
-[View Default Config On Repo Here](DnsCryptPiHoleService/DefaultConfig.py)
+[View Default Config On Repo Here](DnsCryptPiHoleSetup/DefaultConfig.py)
 
 

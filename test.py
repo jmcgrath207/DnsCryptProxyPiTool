@@ -1,9 +1,9 @@
 
-from DnsCryptPiHoleService.DefaultConfig import host,  password, user,dnscryptdownloadlink,\
+from DnsCryptPiHoleSetup.DefaultConfig import host,  password, user,dnscryptdownloadlink,\
 dnscryptexractdir,loopbackstartaddress
 
 
-from DnsCryptPiHoleService.FabricService import FabricExecute
+from DnsCryptPiHoleSetup.FabricService import FabricExecute
 
 
 

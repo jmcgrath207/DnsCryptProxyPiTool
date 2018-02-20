@@ -3,16 +3,25 @@
 #### Run Commands From the Project Root.
 
 ### Create Prod Build ####
+
 python3 setup.py bdist_wheel
+sudo rm -R *.egg*
 sudo pip3 install dist/*
+
+
+
 
 # If uploading to Pypi
 twine upload dist/*
 
+
+
+
+
 ## Remove Prod Build ###
 
-sudo pip3 uninstall DnsCryptPiHoleSetup
-python setup.py clean --all
+sudo pip3 uninstall -y DnsCryptPiHoleSetup
+python3 setup.py clean --all
 rm dist/*
 
 
@@ -20,9 +29,12 @@ rm dist/*
 
 sudo pip3 install -e .
 
+
+
+
 ## Remove Devbuild Build ###
 sudo rm -R *.egg*
-sudo rm /usr/local/bin/DnsCryptPiHoleSetup
+sudo rm /usr/local/bin/dnscryptpiholesetup
 
 
 

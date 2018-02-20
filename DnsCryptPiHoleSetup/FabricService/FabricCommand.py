@@ -1,11 +1,12 @@
 from fabric.api import sudo, cd, run, open_shell
 from fabric.contrib.files import append as fabappend, comment
-from fabric.context_managers import env, output
+from fabric.context_managers import env
 import re
 import ipaddress
 import click
-from DnsCryptPiHoleService.FabricService.StringContainer import DnsCryptService, DnsCryptSocket,\
-    DnsCryptConf, DnsCryptSudoer
+from DnsCryptPiHoleSetup.DefaultConfig import defaultLocation
+from DnsCryptPiHoleSetup.FabricService.StringContainer import DnsCryptService, DnsCryptSocket,\
+    DnsCryptConf
 
 
 
@@ -14,20 +15,7 @@ class FabricCommandClass(object):
 
 
 
-    def CommandFabric3OpenShellMonkeyPatch(self):
-        # Reported on fixed https://github.com/fabric/fabric/issues/1719
-        # Root Cause is https://github.com/fabric/fabric/issues/196 will be fixed in Fabric V2
 
-        click.echo(
-            click.style('Applying Fabric Monkey Patch for OpenShell Command', fg='yellow'))
-
-
-        libInstallPath = run('pip3 show fabric3 | grep -Po "(?<=Location:\s).*"')
-        location = re.sub(r'.*\r\n', "", libInstallPath.stdout) + "/fabric"
-        locationIopy = location + "/io.py"
-        sudo(command="cp " + locationIopy + " " + location + "/io_old.py", user=env.user)
-        sudo(command=r'perl -i -p -e "s/import sys/import os\nimport sys/g" ' + locationIopy,user=env.user)
-        sudo(command=r'perl -i -p -e "s/sys.stdin.read\(1\)/os.read(sys.stdin.fileno(), 1)/g" '+ locationIopy,user=env.user)
 
 
 
@@ -246,6 +234,24 @@ class FabricCommandClass(object):
         click.echo(click.style('DnsCrypt-Proxy 2 install is Complete', fg='green', bold=True))
 
 
+    def CommandFabric3OpenShellMonkeyPatch(self):
+        # Reported on fixed https://github.com/fabric/fabric/issues/1719
+        # Root Cause is https://github.com/fabric/fabric/issues/196 will be fixed in Fabric V2
+
+        click.echo(
+            click.style('Applying Fabric Monkey Patch for OpenShell Command', fg='yellow'))
+
+
+        libInstallPath = run('pip3 show fabric3 | grep -Po "(?<=Location:\s).*"')
+        location = re.sub(r'.*\r\n', "", libInstallPath.stdout) + "/fabric"
+        locationIopy = location + "/io.py"
+        sudo(command="cp " + locationIopy + " " + location + "/io_old.py", user=env.user)
+        sudo(command=r'perl -i -p -e "s/import sys/import os\nimport sys/g" ' + locationIopy,user=env.user)
+        sudo(command=r'perl -i -p -e "s/sys.stdin.read\(1\)/os.read(sys.stdin.fileno(), 1)/g" '+ locationIopy,user=env.user)
+
+
+
+
 
     def CommandUninstall(self):
         """
@@ -315,17 +321,14 @@ class FabricCommandClass(object):
 
 
 
-
     def CommandShowDnsCryptPiHoleSetupConfig(self):
-        libInstallPath = run('pip3 show fabric3 | grep -Po "(?<=Location:\s).*"')
-        location = re.sub(r'.*\r\n', "", libInstallPath.stdout)
-        click.echo(click.style(location, fg='green',bold=True))
+        click.echo(click.style(defaultLocation, fg='green',bold=True))
 
 
 
     def CommandEditDnsCryptPiHoleSetupConfig(self):
-        editor = FabricCommandClass.CommandShowDnsCryptPiHoleSetupConfig.editor
-        open_shell(command= editor + ' /home/pi/.piHoleRestore/01-pihole.conf.old; exit')
+        editor = FabricCommandClass.CommandEditDnsCryptPiHoleSetupConfig.editor
+        open_shell(command= editor + ' ' + defaultLocation + ' ; exit')
 
 
     def CommandRestartConfig(self):
