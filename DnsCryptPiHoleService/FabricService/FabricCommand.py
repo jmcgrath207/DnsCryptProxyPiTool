@@ -14,6 +14,24 @@ class FabricCommandClass(object):
 
 
 
+    def CommandFabric3OpenShellMonkeyPatch(self):
+        # Reported on fixed https://github.com/fabric/fabric/issues/1719
+        # Root Cause is https://github.com/fabric/fabric/issues/196 will be fixed in Fabric V2
+
+        click.echo(
+            click.style('Applying Fabric Monkey Patch for OpenShell Command', fg='yellow'))
+
+
+        libInstallPath = run('pip3 show fabric3 | grep -Po "(?<=Location:\s).*"')
+        location = re.sub(r'.*\r\n', "", libInstallPath.stdout) + "/fabric"
+        locationIopy = location + "/io.py"
+        sudo(command="cp " + locationIopy + " " + location + "/io_old.py", user=env.user)
+        sudo(command=r'perl -i -p -e "s/import sys/import os\nimport sys/g" ' + locationIopy,user=env.user)
+        sudo(command=r'perl -i -p -e "s/sys.stdin.read\(1\)/os.read(sys.stdin.fileno(), 1)/g" '+ locationIopy,user=env.user)
+
+
+
+
     def CommandSystemPackages(self):
         """
         Installs required ssh packages
@@ -260,6 +278,13 @@ class FabricCommandClass(object):
             sudo("systemctl daemon-reload")
             sudo("systemctl reset-failed")
 
+            click.echo(click.style("Removing Fabric Monkey Patch for OpenShell Command",fg='yellow'))
+            libInstallPath = run('pip3 show fabric3 | grep -Po "(?<=Location:\s).*"')
+            location = re.sub(r'.*\r\n', "", libInstallPath.stdout) + "/fabric"
+            locationIopy = location + "/io.py"
+            sudo(command="mv " + location + "/io_old.py" + " " + locationIopy, user=env.user)
+            sudo(command="rm -f " + location + "/io_old.py", user=env.user)
+
             click.echo(click.style("Moving /home/{0}/.piHoleRestore/setupVars.conf.old to /etc/pihole/setupVars.conf".format(env.user),fg='yellow'))
             sudo("mv  /home/{0}/.piHoleRestore/setupVars.conf.old /etc/pihole/setupVars.conf".format(env.user))
 
@@ -285,9 +310,9 @@ class FabricCommandClass(object):
         click.echo(click.style(location, fg='green',bold=True))
 
 
-    # Disabled until issue is fixed https://github.com/fabric/fabric/issues/1719
-    #def CommandEditDefaultConfig(self):
-    #    open_shell(command='nano  /home/pi/.piHoleRestore/01-pihole.conf.old; exit')
+
+    def CommandEditDefaultConfig(self):
+        open_shell(command='nano  /home/pi/.piHoleRestore/01-pihole.conf.old; exit')
 
 
 

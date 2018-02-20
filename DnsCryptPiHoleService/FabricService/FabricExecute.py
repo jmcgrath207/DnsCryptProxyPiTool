@@ -28,6 +28,8 @@ class FabricExecuteClass(FabricCommandClass):
         self.ListenAddress = None
 
 
+    def ExecuteFabric3OpenShellMonkeyPatch(self):
+        execute(self.CommandFabric3OpenShellMonkeyPatch, host=self.host)
 
     def ExecuteSystemPackages(self):
         execute(self.CommandSystemPackages, host=self.host)
@@ -58,10 +60,8 @@ class FabricExecuteClass(FabricCommandClass):
         execute(self.CommandShowDefaultConfigLocation, host=self.host)
 
 
-
-    # Disabled until issue is fixed https://github.com/fabric/fabric/issues/1719
-    #def ExecuteEditDefaultConfig(self):
-    #    execute(self.CommandEditDefaultConfig, host=self.host)
+    def ExecuteEditDefaultConfig(self):
+        execute(self.CommandEditDefaultConfig, host=self.host)
 
     # New DnsCrypt Proxy seems to self recover well for now. May Need in the future
     #def ExecuteCreateCronJob(self,cronjobminutes: str,cronjobmessage: str):

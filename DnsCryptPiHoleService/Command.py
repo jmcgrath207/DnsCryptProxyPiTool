@@ -1,5 +1,5 @@
 from DnsCryptPiHoleService.DefaultConfig import host,  password, user,dnscryptdownloadlink,\
-dnscryptexractdir,loopbackstartaddress, cronjobmessage, cronjobminutes
+dnscryptexractdir,loopbackstartaddress
 from DnsCryptPiHoleService import ClickContextType
 from click_help_colors import HelpColorsGroup
 from DnsCryptPiHoleService.ClickHelperClasses import ShowDefaultSingleQuote
@@ -44,6 +44,7 @@ def mainCommand(ctx: ClickContextType,host: str, user: str, password: str, verbo
 def install(ctx: ClickContextType,dnscryptexractdir: str,dnscryptdownloadlink: str,
             loopbackstartaddress: str):
     Fec = ctx.obj['Fabric']
+    Fec.ExecuteFabric3OpenShellMonkeyPatch()
     Fec.ExecuteSystemPackages()
     Fec.ExecuteBuildDNSCrypt(dnscryptexractdir,dnscryptdownloadlink)
     Fec.ExecuteCreateDNSCryptProxies(loopbackstartaddress, dnscryptexractdir)
@@ -65,20 +66,22 @@ def uninstall(ctx: ClickContextType):
 
 
 
-#@click.option('--editdefault','-z',help='Edit Default Config of dnscryptpiholesetup command', show_default=True, is_flag=True)
+
 @mainCommand.command()
+@click.option('--editdefault','-y',help='Edit Default Config of dnscryptpiholesetup command', show_default=True, is_flag=True)
 @click.option('--showdefaultconfiglocation','-z',help='show location of default config file for dnscryptpiholesetup command', show_default=True, is_flag=True)
 @click.pass_context
-def config(ctx: ClickContextType,showdefaultconfiglocation: bool ):
+def config(ctx: ClickContextType,showdefaultconfiglocation: bool, editdefault: bool ):
     Fec = ctx.obj['Fabric']
 
-    if showdefaultconfiglocation:
-        Fec.ExecuteShowDefaultConfigLocation()
-        ctx.exit()
-    # Disabled until issue is fixed https://github.com/fabric/fabric/issues/1719
-    #elif editdefault:
-    #    Fec.ExecuteEditDefaultConfig()
+    #if showdefaultconfiglocation:
+    #    Fec.ExecuteShowDefaultConfigLocation()
     #    ctx.exit()
+    # Disabled until issue is fixed https://github.com/fabric/fabric/issues/1719
+    # Root Cause is https://github.com/fabric/fabric/issues/196 will be fixed in Fabric V2
+    if editdefault:
+        Fec.ExecuteEditDefaultConfig()
+        ctx.exit()
     else:
         click.echo(config.get_help(ctx))
         ctx.exit()
