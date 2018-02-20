@@ -1,5 +1,5 @@
 from DnsCryptPiHoleService.DefaultConfig import host,  password, user,dnscryptdownloadlink,\
-dnscryptexractdir,loopbackstartaddress
+dnscryptexractdir,loopbackstartaddress, editor
 from DnsCryptPiHoleService import ClickContextType
 from click_help_colors import HelpColorsGroup
 from DnsCryptPiHoleService.ClickHelperClasses import ShowDefaultSingleQuote
@@ -68,22 +68,34 @@ def uninstall(ctx: ClickContextType):
 
 
 @mainCommand.command()
-@click.option('--editdefault','-y',help='Edit Default Config of dnscryptpiholesetup command', show_default=True, is_flag=True)
-@click.option('--showdefaultconfiglocation','-z',help='show location of default config file for dnscryptpiholesetup command', show_default=True, is_flag=True)
+@click.option('--editdnscryptproxyconfig','-y',help='Edit Default Config of DnsCrypt Proxy  Toml File', show_default=True, is_flag=True)
+@click.option('--editdnscryptpiholesetupconfig','-w',help='Edit Default Config of dnscryptpiholesetup command', show_default=True, is_flag=True)
+@click.option('--showdnscryptproxyconfig','-z',help='show location of Default Config of DnsCrypt Proxy  Toml File', show_default=True, is_flag=True)
+@click.option('--showdnscryptpiholesetupconfig','-x',help='show location of Default Config of dnscryptpiholesetup command', show_default=True, is_flag=True)
+@click.option('--editor','-t',help="Supply which Editor you want to use ex. -t 'nano' -y",default=editor, show_default=True,cls=ShowDefaultSingleQuote)
 @click.pass_context
-def config(ctx: ClickContextType,showdefaultconfiglocation: bool, editdefault: bool ):
+def admin(ctx: ClickContextType,showdnscryptproxyconfig: bool, showdnscryptpiholesetupconfig: bool,
+           editdnscryptproxyconfig: bool, editdnscryptpiholesetupconfig: bool,editor: str):
     Fec = ctx.obj['Fabric']
 
-    #if showdefaultconfiglocation:
-    #    Fec.ExecuteShowDefaultConfigLocation()
-    #    ctx.exit()
-    # Disabled until issue is fixed https://github.com/fabric/fabric/issues/1719
-    # Root Cause is https://github.com/fabric/fabric/issues/196 will be fixed in Fabric V2
-    if editdefault:
-        Fec.ExecuteEditDefaultConfig()
+    if showdnscryptproxyconfig:
+        Fec.ExecuteShowDnsCryptProxyConfig()
         ctx.exit()
+
+    elif showdnscryptpiholesetupconfig:
+        Fec.ExecuteShowDnsCryptPiHoleSetupConfig()
+        ctx.exit()
+
+    elif editdnscryptpiholesetupconfig:
+        Fec.ExecuteEditDnsCryptPiHoleSetupConfig(editor)
+        ctx.exit()
+
+    elif editdnscryptproxyconfig:
+        Fec.ExecuteEditDnsCryptProxyConfig(editor)
+        ctx.exit()
+
     else:
-        click.echo(config.get_help(ctx))
+        click.echo(admin.get_help(ctx))
         ctx.exit()
 
 

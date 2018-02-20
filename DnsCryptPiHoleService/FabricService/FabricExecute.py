@@ -56,16 +56,21 @@ class FabricExecuteClass(FabricCommandClass):
         execute(self.CommandUninstall, host=self.host)
 
 
-    def ExecuteShowDefaultConfigLocation(self):
-        execute(self.CommandShowDefaultConfigLocation, host=self.host)
+    def ExecuteShowDnsCryptProxyConfig(self):
+        execute(self.CommandShowDnsCryptProxyConfig, host=self.host)
 
 
-    def ExecuteEditDefaultConfig(self):
-        execute(self.CommandEditDefaultConfig, host=self.host)
+    def ExecuteEditDnsCryptProxyConfig(self,editor: str):
+        FabricCommandClass.CommandEditDnsCryptProxyConfig.editor = editor
+        execute(self.CommandEditDnsCryptProxyConfig, host=self.host)
 
-    # New DnsCrypt Proxy seems to self recover well for now. May Need in the future
-    #def ExecuteCreateCronJob(self,cronjobminutes: str,cronjobmessage: str):
-    #    FabricCommandClass.CommandCreateCronJob.cronjobminutes = cronjobminutes
-    #    FabricCommandClass.CommandCreateCronJob.cronjobmessage = cronjobmessage
-    #    execute(self.CommandCreateCronJob, host=self.host)
+
+    def ExecuteShowDnsCryptPiHoleSetupConfig(self):
+        execute(self.CommandShowDnsCryptPiHoleSetupConfig, host=self.host)
+
+    def ExecuteEditDnsCryptPiHoleSetupConfig(self,editor: str):
+        FabricCommandClass.CommandShowDnsCryptPiHoleSetupConfig.editor = editor
+        execute(self.CommandShowDnsCryptPiHoleSetupConfig, host=self.host)
+
+
 
