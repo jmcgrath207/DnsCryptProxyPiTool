@@ -71,11 +71,16 @@ When it is finish you will see `DNS crypt Setup has Ran Successfully`
 
 ` sudo systemctl status -l dnscrypt-proxy@\* `
 
+
+#### Suporrt for 3.2 Pihole only until Bugs are fixed
+https://pi-hole.net/2018/02/14/pi-hole-v3-3-released-its-extra-special/
+https://discourse.pi-hole.net/t/how-do-i-revert-to-a-previous-version-of-pi-hole/7168
+ 
  
 #### If you wish to override Default, the Default config is found here:
 
 ` /usr/local/lib/{Python Version}/dist-packages/DnsCryptPiHoleSetup/DefaultConfig.py`
 
-[View Default Config On Repo Here](DnsCryptPiHoleSetup/DefaultConfig.py)
+[View Default Config On Repo Here](DnsCryptProxyTool/DefaultConfig.py)
 
 

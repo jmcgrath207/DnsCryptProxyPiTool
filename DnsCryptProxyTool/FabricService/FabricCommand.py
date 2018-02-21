@@ -4,8 +4,10 @@ from fabric.context_managers import env
 import re
 import ipaddress
 import click
-from DnsCryptPiHoleSetup.DefaultConfig import defaultLocation
-from DnsCryptPiHoleSetup.FabricService.StringContainer import DnsCryptService, DnsCryptSocket,\
+import requests
+from distutils.version import LooseVersion
+from DnsCryptProxyTool.DefaultConfig import defaultLocation
+from DnsCryptProxyTool.FabricService.StringContainer import DnsCryptService, DnsCryptSocket,\
     DnsCryptConf
 
 
@@ -15,7 +17,44 @@ class FabricCommandClass(object):
 
 
 
+    def _HelperDnsCryptDownandExtract(self, dnscryptdownloadlink: str, dnscryptexractdir: str):
+        """
 
+        Downloads and Extracts the DNS Crypt
+
+        :param dnscryptdownloadlink:
+        :param dnscryptexractdir:
+        :return:
+        """
+        with cd(dnscryptexractdir):
+            click.echo(
+                click.style('Downloading DNS Crypt Proxy 2 from: {0}'.format(dnscryptdownloadlink), fg='yellow'))
+
+            click.echo(
+                click.style('Building DNS Crypt Proxy 2 at path: {0}/dnscryptBuild/'.format(dnscryptexractdir),
+                            fg='yellow'))
+
+            run('wget ' + dnscryptdownloadlink)
+            run("mkdir -p " + dnscryptexractdir + "/dnscryptBuild/")
+            run('tar -xf dnscrypt*.tar.gz -C dnscryptBuild --strip-components=1')
+
+
+
+
+
+
+    def _HelperCleanBuildDir(self,dnscryptexractdir: str):
+        """
+        Removes the Build Directory
+        :param dnscryptexractdir:
+        :return:
+        """
+
+
+        click.echo(click.style('Removed Build Directory at {0}/dnscryptBuild/'.format(dnscryptexractdir),
+                               fg='yellow'))
+
+        sudo('rm -Rf {0}/dnscrypt*'.format(dnscryptexractdir))
 
 
 
@@ -49,21 +88,42 @@ class FabricCommandClass(object):
 
         returnCode = run("which dnscrypt-proxy")
         if(returnCode.failed):
-            with cd(dnscryptexractdir):
-
-                click.echo(
-                    click.style('Downloading DNS Crypt Proxy 2 from: {0}'.format(dnscryptdownloadlink), fg='yellow'))
-
-                click.echo(
-                    click.style('Building DNS Crypt Proxy 2 at path: {0}/dnscryptBuild/'.format(dnscryptexractdir),
-                                fg='yellow'))
-
-                run('wget ' + dnscryptdownloadlink)
-                run("mkdir -p " + dnscryptexractdir + "/dnscryptBuild/")
-                run('tar -xf dnscrypt*.tar.gz -C dnscryptBuild --strip-components=1')
+            self._HelperDnsCryptDownandExtract(dnscryptdownloadlink,dnscryptexractdir)
         else:
           raise  click.ClickException(click.style("Dns Crypt Proxy 2 is already installed at " + re.sub( r'.*\r\n',"",returnCode.stdout) + \
                 ". Aborting Install",fg='red',bold=True))
+
+
+
+
+
+
+
+
+    def CommandFabric3OpenShellMonkeyPatch(self):
+        """
+        Allows Interactive session for editing the config files
+
+        This patch was made due the maintainer not wanting to implement this in fabric v1
+
+         Reported on fixed https://github.com/fabric/fabric/issues/1719
+        Root Cause is https://github.com/fabric/fabric/issues/196 will be fixed in Fabric V2
+        :return:
+        """
+
+
+        click.echo(
+            click.style('Applying Fabric Monkey Patch for OpenShell Command', fg='yellow'))
+
+
+        libInstallPath = run('pip3 show fabric3 | grep -Po "(?<=Location:\s).*"')
+        location = re.sub(r'.*\r\n', "", libInstallPath.stdout) + "/fabric"
+        locationIopy = location + "/io.py"
+        sudo(command="cp " + locationIopy + " " + location + "/io_old.py", user=env.user)
+        sudo(command=r'perl -i -p -e "s/import sys/import os\nimport sys/g" ' + locationIopy,user=env.user)
+        sudo(command=r'perl -i -p -e "s/sys.stdin.read\(1\)/os.read(sys.stdin.fileno(), 1)/g" '+ locationIopy,user=env.user)
+
+
 
 
 
@@ -223,31 +283,9 @@ class FabricCommandClass(object):
                                fg='yellow'))
         sudo("service dnsmasq restart")
 
-
-        click.echo(click.style('Removed Build Directory at {0}/dnscryptBuild/'.format(dnscryptexractdir),
-                               fg='yellow'))
-
-        sudo('rm -Rf {0}/dnscrypt*'.format(dnscryptexractdir))
-
-        click.echo(click.style('DnsCrypt-Proxy 2 located at located at /var/log/dnscrypt-proxy/ ', fg='green', bold=True))
-        click.echo(click.style('DnsCrypt-Proxy 2 config located at /etc/dnscrypt-proxy/dnscrypt-proxy.toml ', fg='green', bold=True))
-        click.echo(click.style('DnsCrypt-Proxy 2 install is Complete', fg='green', bold=True))
+        self._HelperCleanBuildDir(dnscryptexractdir)
 
 
-    def CommandFabric3OpenShellMonkeyPatch(self):
-        # Reported on fixed https://github.com/fabric/fabric/issues/1719
-        # Root Cause is https://github.com/fabric/fabric/issues/196 will be fixed in Fabric V2
-
-        click.echo(
-            click.style('Applying Fabric Monkey Patch for OpenShell Command', fg='yellow'))
-
-
-        libInstallPath = run('pip3 show fabric3 | grep -Po "(?<=Location:\s).*"')
-        location = re.sub(r'.*\r\n', "", libInstallPath.stdout) + "/fabric"
-        locationIopy = location + "/io.py"
-        sudo(command="cp " + locationIopy + " " + location + "/io_old.py", user=env.user)
-        sudo(command=r'perl -i -p -e "s/import sys/import os\nimport sys/g" ' + locationIopy,user=env.user)
-        sudo(command=r'perl -i -p -e "s/sys.stdin.read\(1\)/os.read(sys.stdin.fileno(), 1)/g" '+ locationIopy,user=env.user)
 
 
 
@@ -333,14 +371,79 @@ class FabricCommandClass(object):
 
     def CommandRestartConfig(self):
 
+        click.echo(click.style('Stoping Dns Crypt Services and DnsMasq',
+                               fg='yellow'))
+
         sudo("systemctl stop dnscrypt-proxy.service")
         sudo("systemctl stop dnscrypt-proxy.socket")
         sudo("service dnsmasq stop")
+
+        click.echo(click.style('Starting Dns Crypt Services and DnsMasq',
+                               fg='yellow'))
 
 
         sudo("systemctl start dnscrypt-proxy.socket")
         sudo("systemctl start dnscrypt-proxy.service")
         sudo("service dnsmasq start")
+
+
+
+    def CommandUpdateCheckDnsCryptProxy(self):
+        """
+        Find the Latest DnsCrypt Proxy Release
+        and Returns Url
+
+        :return: str
+        """
+
+        dnscryptexractdir = FabricCommandClass.CommandUpdateCheckDnsCryptProxy.dnscryptexractdir
+
+
+        returnCode = run("dnscrypt-proxy -version")
+        version = LooseVersion(re.sub(r'.*\r\n', "", returnCode.stdout))
+        json = requests.get('https://api.github.com/repos/jedisct1/dnscrypt-proxy/releases/latest').json()
+        if version < LooseVersion(json["tag_name"]):
+            click.echo(click.style('Dns Crypt Proxy out of date, Finding Download link',
+                                   fg='yellow'))
+            jsonAssets = json['assets']
+            assetCount = len(jsonAssets)
+            for assetnum in range(assetCount):
+                if re.match(r'.*linux_arm\-.*', jsonAssets[assetnum]['name']):
+                    self._HelperDnsCryptDownandExtract(jsonAssets[assetnum]['browser_download_url'], dnscryptexractdir)
+
+        else:
+            raise click.ClickException(
+                click.style("Dns Crypt Proxy 2 is running version " + str(version) + " and is update to date. Aborting Update", fg='red', bold=True))
+
+
+
+
+
+
+    def CommandUpgradeDnsCryptProxy(self):
+        """
+
+        Replaces the old binary file with the new one.
+
+        :return:
+        """
+
+        dnscryptexractdir = FabricCommandClass.CommandUpgradeDnsCryptProxy.dnscryptexractdir
+
+        with cd(dnscryptexractdir + "/dnscryptBuild/"):
+            click.echo(click.style('Upgrading Dns Crypt Proxy ',
+                                   fg='yellow'))
+            sudo('install -Dm755 "dnscrypt-proxy" "/usr/bin/dnscrypt-proxy"')
+        self._HelperCleanBuildDir(dnscryptexractdir)
+
+
+
+
+
+
+
+
+
 
 
 

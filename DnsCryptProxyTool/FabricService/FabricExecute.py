@@ -1,4 +1,4 @@
-from DnsCryptPiHoleSetup.FabricService.FabricCommand import FabricCommandClass
+from DnsCryptProxyTool.FabricService.FabricCommand import FabricCommandClass
 from fabric.context_managers import env, output
 from fabric.tasks import execute
 
@@ -74,6 +74,19 @@ class FabricExecuteClass(FabricCommandClass):
 
     def ExecuteRestartConfig(self):
         execute(self.CommandRestartConfig, host=self.host)
+
+    def ExecuteUpdateCheckDnsCryptProxy(self,dnscryptexractdir: str):
+        FabricCommandClass.CommandUpdateCheckDnsCryptProxy.dnscryptexractdir = dnscryptexractdir
+        execute(self.CommandUpdateCheckDnsCryptProxy, host=self.host)
+
+
+    def ExecuteUpgradeDnsCryptProxy(self, dnscryptexractdir: str):
+        FabricCommandClass.CommandUpgradeDnsCryptProxy.dnscryptexractdir = dnscryptexractdir
+        execute(self.CommandUpgradeDnsCryptProxy, host=self.host)
+
+
+
+
 
 
 
