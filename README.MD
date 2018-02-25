@@ -28,7 +28,7 @@ https://discourse.pi-hole.net/t/how-do-i-revert-to-a-previous-version-of-pi-hole
 #### SSH to your PI Hole
 
 `sudo apt-get install python3-pip`
-###### Note: if you do not use Sudo it will install to the `/home/{username}/.local/bin` which is not available by a path in Raspbian Strech by default. Sudo will install the command in `/usr/local/bin/DnsCryptPiHoleSetup`. This make it globally available.
+###### Note: if you do not use Sudo it will install to the `/home/{username}/.local/bin` which is not available by a path in Raspbian Strech by default. Sudo will install the command in `/usr/local/bin/dnscrypt-proxy-pi-tool`. This make it globally available.
 `sudo pip3 install DnsCryptProxyPiTool`
 
 

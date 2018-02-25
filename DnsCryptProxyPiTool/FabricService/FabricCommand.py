@@ -69,8 +69,7 @@ class FabricCommandClass(object):
         Installs required ssh packages
         :return:
         """
-        requiredPackages = "build-essential  " \
-                           "bash-completion libsystemd-dev pkg-config python3-dev vim jq"
+        requiredPackages = "build-essential bash-completion libsystemd-dev pkg-config python3-dev vim jq"
         returnCode = run("dpkg -l " + requiredPackages)
         if(returnCode.failed):
             sudo('sudo apt-get update')
@@ -129,9 +128,15 @@ class FabricCommandClass(object):
         libInstallPath = run('pip3 show fabric3 | grep -Po "(?<=Location:\s).*"')
         location = re.sub(r'.*\r\n', "", libInstallPath.stdout) + "/fabric"
         locationIopy = location + "/io.py"
-        sudo(command="cp " + locationIopy + " " + location + "/io_old.py", user=env.user)
-        sudo(command=r'perl -i -p -e "s/import sys/import os\nimport sys/g" ' + locationIopy,user=env.user)
-        sudo(command=r'perl -i -p -e "s/sys.stdin.read\(1\)/os.read(sys.stdin.fileno(), 1)/g" '+ locationIopy,user=env.user)
+        if re.match(r'.*site-packages.*',location):
+            sudo(command="cp " + locationIopy + " " + location + "/io_old.py", user=env.user)
+            sudo(command=r'perl -i -p -e "s/import sys/import os\nimport sys/g" ' + locationIopy,user=env.user)
+            sudo(command=r'perl -i -p -e "s/sys.stdin.read\(1\)/os.read(sys.stdin.fileno(), 1)/g" '+ locationIopy,user=env.user)
+        else:
+            sudo(command="cp " + locationIopy + " " + location + "/io_old.py")
+            sudo(command=r'perl -i -p -e "s/import sys/import os\nimport sys/g" ' + locationIopy)
+            sudo(command=r'perl -i -p -e "s/sys.stdin.read\(1\)/os.read(sys.stdin.fileno(), 1)/g" '+ locationIopy)
+
 
 
 
