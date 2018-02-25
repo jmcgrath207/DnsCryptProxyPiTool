@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='DnsCryptProxyPiTool',
-    version='0.18',
+    version='0.19',
     url='https://github.com/jmcgrath207/DnsCryptProxyPiTool',
     license='MIT License',
     author='John McGrath',

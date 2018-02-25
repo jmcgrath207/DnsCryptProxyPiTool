@@ -1,14 +1,15 @@
 
 
-### SSH to your Pi Hole DNS Server
 
-###### Note: if you do not use Sudo it will install to the `/home/{username}/.local/bin` which is not available by a path in Raspbian Strech by default. Sudo will install the command in `/usr/local/bin/dnscrypt-proxy-pi-tool`. This make it globally available.
-`sudo pip3 install DnsCryptProxyPiTool`
+
 
 
 # SETUP
 
-### Install the dnscrypt-proxy-pi-tool
+
+### SSH to your Pi Hole DNS Server
+
+#### Install the dnscrypt-proxy-pi-tool
 
 ###### Note: if you do not use Sudo it will install to the `/home/{username}/.local/bin` which is not available by a path in Raspbian Strech by default. Sudo will install the command in `/usr/local/bin/dnscrypt-proxy-pi-tool`. This make it globally available.
 `sudo pip3 install DnsCryptProxyPiTool`
@@ -45,13 +46,6 @@ execute `pihole -r` and do the reconfigure Option.
 Then do `dnscrypt-proxy-pi-tool uninstall`. This will Uninstall all installation of dnscrypt-proxy new and old.
 
 From here continue to follow the normal  directions.
-
-
-
-
-
-
-
 
 
 ### Run the command

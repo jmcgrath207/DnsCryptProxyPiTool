@@ -5,6 +5,7 @@
 
 
 ### Create Prod Build ####
+# First Time pip install wheel
 
 python3 setup.py bdist_wheel
 sudo rm -R *.egg*
