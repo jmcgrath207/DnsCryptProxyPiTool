@@ -65,7 +65,7 @@ class FabricCommandClass(object):
         :return:
         """
         requiredPackages = "build-essential  " \
-                           "bash-completion libsystemd-dev pkg-config python3-dev  jq"
+                           "bash-completion libsystemd-dev pkg-config python3-dev vim jq"
         returnCode = run("dpkg -l " + requiredPackages)
         if(returnCode.failed):
             sudo('sudo apt-get update')
