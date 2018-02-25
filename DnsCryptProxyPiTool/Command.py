@@ -1,10 +1,10 @@
-from DnsCryptProxyTool.DefaultConfig import host,  password, user,dnscryptdownloadlink,\
+from DnsCryptProxyPiTool.DefaultConfig import host,  password, user,dnscryptdownloadlink,\
 dnscryptexractdir,loopbackstartaddress, editor
-from DnsCryptProxyTool import ClickContextType
+from DnsCryptProxyPiTool import ClickContextType
 from click_help_colors import HelpColorsGroup
-from DnsCryptProxyTool.ClickHelperClasses import ShowDefaultSingleQuote
+from DnsCryptProxyPiTool.ClickHelperClasses import ShowDefaultSingleQuote
 import click
-from DnsCryptProxyTool.FabricService.FabricExecute import FabricExecuteClass
+from DnsCryptProxyPiTool.FabricService.FabricExecute import FabricExecuteClass
 
 
 
@@ -77,50 +77,50 @@ def uninstall(ctx: ClickContextType):
 
 
 @mainCommand.command()
-@click.option('--editdnscryptproxyconfig','-y',help='Edit Default Config of DnsCrypt Proxy  Toml File',
+@click.option('--edit_dnscrypt_proxy_config','-y',help='Edit Default Config of DnsCrypt Proxy Toml File',
               show_default=True, is_flag=True)
-@click.option('--editdnscryptpiholesetupconfig','-w',help='Edit Default Config of dnscryptpiholesetup command',
+@click.option('--edit_dnscrypt_proxy_pi_tool_config','-w',help='Edit Default Config of dnscrypt-proxy-pi-tool command',
               show_default=True, is_flag=True)
-@click.option('--showdnscryptproxyconfig','-z',help='show location of Default Config of DnsCrypt Proxy  Toml File',
+@click.option('--show_dnscrypt_proxy_config','-z',help='show location of Default Config of DnsCrypt Proxy  Toml File',
               show_default=True, is_flag=True)
-@click.option('--showdnscryptpiholesetupconfig','-x',help='show location of Default Config of dnscryptpiholesetup command',
+@click.option('--show_dnscrypt_proxy_pi_tool_config','-x',help='show location of Default Config of dnscrypt-proxy-pi-tool command',
               show_default=True, is_flag=True)
 @click.option('--editor','-t',help="Supply which Editor you want to use ex. -t 'nano' -y",
               default=editor, show_default=True,cls=ShowDefaultSingleQuote)
-@click.option('--restartconfig','-s',help='Restarts DnsMasq, Dnscrypt Service and Proxy. Use this after changing the  Dnscrypt Toml Config ',
+@click.option('--restart_config','-s',help='Restarts DnsMasq, Dnscrypt Service and Proxy. Use this after changing the  Dnscrypt Toml Config ',
               show_default=True, is_flag=True)
-@click.option('--updatednscryptproxy','-q',help='Update the DnsCrypt Proxy to Lastest Realease. WARNING: will cause Dnsmasq Restart',
+@click.option('--update_dnscrypt_proxy','-q',help='Update the DnsCrypt Proxy to Lastest Realease. WARNING: will cause Dnsmasq Restart',
               show_default=True, is_flag=True)
 @click.option('--dnscryptexractdir', '-e', default=dnscryptexractdir,
               help='Directory for where the DnsCrypt Proxy is going to be downloaded and extracted at during Install',
               show_default=True,cls=ShowDefaultSingleQuote)
 @click.pass_context
-def admin(ctx: ClickContextType,showdnscryptproxyconfig: bool, showdnscryptpiholesetupconfig: bool,
-           editdnscryptproxyconfig: bool, editdnscryptpiholesetupconfig: bool,editor: str,
-          restartconfig: bool, updatednscryptproxy:bool,dnscryptexractdir:str):
+def admin(ctx: ClickContextType,show_dnscrypt_proxy_config: bool, show_dnscrypt_proxy_pi_tool_config: bool,
+          edit_dnscrypt_proxy_config: bool, edit_dnscrypt_proxy_pi_tool_config: bool,editor: str,
+          restart_config: bool, update_dnscrypt_proxy:bool,dnscryptexractdir:str):
     Fec = ctx.obj['Fabric']
 
-    if showdnscryptproxyconfig:
+    if show_dnscrypt_proxy_config:
         Fec.ExecuteShowDnsCryptProxyConfig()
         ctx.exit()
 
-    elif showdnscryptpiholesetupconfig:
+    elif show_dnscrypt_proxy_pi_tool_config:
         Fec.ExecuteShowDnsCryptPiHoleSetupConfig()
         ctx.exit()
 
-    elif editdnscryptpiholesetupconfig:
+    elif edit_dnscrypt_proxy_pi_tool_config:
         Fec.ExecuteEditDnsCryptPiHoleSetupConfig(editor)
         ctx.exit()
 
-    elif editdnscryptproxyconfig:
+    elif edit_dnscrypt_proxy_config:
         Fec.ExecuteEditDnsCryptProxyConfig(editor)
         ctx.exit()
 
-    elif restartconfig:
+    elif restart_config:
         Fec.ExecuteRestartConfig()
         ctx.exit()
 
-    elif updatednscryptproxy:
+    elif update_dnscrypt_proxy:
         Fec.ExecuteUpdateCheckDnsCryptProxy(dnscryptexractdir)
         Fec.ExecuteUpgradeDnsCryptProxy(dnscryptexractdir)
         Fec.ExecuteRestartConfig()

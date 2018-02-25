@@ -6,8 +6,8 @@ import ipaddress
 import click
 import requests
 from distutils.version import LooseVersion
-from DnsCryptProxyTool.DefaultConfig import defaultLocation
-from DnsCryptProxyTool.FabricService.StringContainer import DnsCryptService, DnsCryptSocket,\
+from DnsCryptProxyPiTool.DefaultConfig import defaultLocation
+from DnsCryptProxyPiTool.FabricService.StringContainer import DnsCryptService, DnsCryptSocket,\
     DnsCryptConf
 
 
@@ -364,7 +364,7 @@ class FabricCommandClass(object):
 
     def CommandEditDnsCryptPiHoleSetupConfig(self):
         editor = FabricCommandClass.CommandEditDnsCryptPiHoleSetupConfig.editor
-        open_shell(command= editor + ' ' + defaultLocation + ' ; exit')
+        open_shell(command='sudo ' + editor + ' ' + defaultLocation + ' ; exit')
 
 
     def CommandRestartConfig(self):

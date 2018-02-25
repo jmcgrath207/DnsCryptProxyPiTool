@@ -81,6 +81,6 @@ https://discourse.pi-hole.net/t/how-do-i-revert-to-a-previous-version-of-pi-hole
 
 ` /usr/local/lib/{Python Version}/dist-packages/DnsCryptPiHoleSetup/DefaultConfig.py`
 
-[View Default Config On Repo Here](DnsCryptProxyTool/DefaultConfig.py)
+[View Default Config On Repo Here](DnsCryptProxyPiTool/DefaultConfig.py)
 
 

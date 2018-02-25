@@ -1,4 +1,4 @@
-from DnsCryptProxyTool.FabricService.FabricCommand import FabricCommandClass
+from DnsCryptProxyPiTool.FabricService.FabricCommand import FabricCommandClass
 from fabric.context_managers import env, output
 from fabric.tasks import execute
 

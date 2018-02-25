@@ -1,9 +1,9 @@
 
-from DnsCryptProxyTool.DefaultConfig import host,  password, user,dnscryptdownloadlink,\
+from DnsCryptProxyPiTool.DefaultConfig import host,  password, user,dnscryptdownloadlink,\
 dnscryptexractdir,loopbackstartaddress
 
 
-from DnsCryptProxyTool.FabricService import FabricExecute
+from DnsCryptProxyPiTool.FabricService import FabricExecute
 
 
 

@@ -17,7 +17,7 @@ setup(
     include_package_data=False,
     entry_points={
         'console_scripts': [
-            'dnscryptproxytool=DnsCryptProxyTool.Command:mainCommand',
+            'dnscrypt-proxy-pi-tool=DnsCryptProxyPiTool.Command:mainCommand',
         ],
     },
     classifiers=[
