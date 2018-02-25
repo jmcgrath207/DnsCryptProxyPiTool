@@ -313,6 +313,7 @@ class FabricCommandClass(object):
             sudo("rm -f /etc/systemd/system/dnscrypt-proxy*")
             sudo("rm -f /usr/lib/systemd/system/dnscrypt-proxy*")
             sudo("rm -f /usr/bin/dnscrypt-proxy")
+            sudo("rm -f /usr/local/sbin/dnscrypt-proxy")
             sudo("rm -Rf /etc/dnscrypt-proxy")
             sudo("rm -Rf /var/log/dnscrypt-proxy")
             sudo("rm -f /usr/share/doc/dnscrypt-proxy/example-forwarding-rules.txt")

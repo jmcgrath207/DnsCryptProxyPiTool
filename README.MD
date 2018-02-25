@@ -5,6 +5,12 @@ DnsCryptPiHoleSetup is a command line tool to set up Dnscrypt Proxies on PiHole 
 
 This tool is meant to be a all in one solution to manage and build your DNS proxies. If you do not like a setup you have configured you can rerun the tool to install new Dns Crypt proxies with no repercussions.
 
+#### Support for 3.2 Pihole only until Bugs are fixed
+https://pi-hole.net/2018/02/14/pi-hole-v3-3-released-its-extra-special/
+https://discourse.pi-hole.net/t/how-do-i-revert-to-a-previous-version-of-pi-hole/7168
+ 
+
+
 
 ## Features
 
@@ -23,7 +29,7 @@ This tool is meant to be a all in one solution to manage and build your DNS prox
 
 `sudo apt-get install python3-pip`
 ###### Note: if you do not use Sudo it will install to the `/home/{username}/.local/bin` which is not available by a path in Raspbian Strech by default. Sudo will install the command in `/usr/local/bin/DnsCryptPiHoleSetup`. This make it globally available.
-`sudo pip3 install DnsCryptPiHoleSetup`
+`sudo pip3 install DnsCryptProxyPiTool`
 
 
 #### Find your Proxy of choice
@@ -72,10 +78,7 @@ When it is finish you will see `DNS crypt Setup has Ran Successfully`
 ` sudo systemctl status -l dnscrypt-proxy@\* `
 
 
-#### Suporrt for 3.2 Pihole only until Bugs are fixed
-https://pi-hole.net/2018/02/14/pi-hole-v3-3-released-its-extra-special/
-https://discourse.pi-hole.net/t/how-do-i-revert-to-a-previous-version-of-pi-hole/7168
- 
+
  
 #### If you wish to override Default, the Default config is found here:
 

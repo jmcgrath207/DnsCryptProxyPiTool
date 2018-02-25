@@ -4,8 +4,8 @@ from setuptools import setup, find_packages
 
 
 setup(
-    name='DnsCryptPiHoleSetup',
-    version='0.15',
+    name='DnsCryptProxyPiTool',
+    version='0.16',
     url='https://github.com/jmcgrath207/DnsCryptPiHoleSetup',
     license='MIT License',
     author='John McGrath',
