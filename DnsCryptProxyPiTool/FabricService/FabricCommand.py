@@ -30,12 +30,17 @@ class FabricCommandClass(object):
             click.echo(
                 click.style('Downloading DNS Crypt Proxy 2 from: {0}'.format(dnscryptdownloadlink), fg='yellow'))
 
+            returnCode = run('wget ' + dnscryptdownloadlink)
+            if (returnCode.failed):
+
+                raise click.ClickException(click.style(
+                    "Could not Download DnsCrypt Proxy 2. Check Internet connection or Dns Settings. Aborting Install", fg='red', bold=True))
+
+
+            run("mkdir -p " + dnscryptexractdir + "/dnscryptBuild/")
             click.echo(
                 click.style('Building DNS Crypt Proxy 2 at path: {0}/dnscryptBuild/'.format(dnscryptexractdir),
                             fg='yellow'))
-
-            run('wget ' + dnscryptdownloadlink)
-            run("mkdir -p " + dnscryptexractdir + "/dnscryptBuild/")
             run('tar -xf dnscrypt*.tar.gz -C dnscryptBuild --strip-components=1')
 
 
@@ -70,7 +75,12 @@ class FabricCommandClass(object):
         if(returnCode.failed):
             sudo('sudo apt-get update')
             click.echo(click.style('Installing system dependencies: {0} for DNS Crypt Proxy 2'.format(requiredPackages),fg='yellow'))
-            sudo('apt-get -y install ' + requiredPackages)
+            returnsudo = sudo('apt-get -y install ' + requiredPackages)
+            if (returnsudo.failed):
+                raise click.ClickException(click.style(
+                    "Could not Apt-Get install {0}. Check Internet connection or Dns Settings. Aborting Install".format(requiredPackages),
+                    fg='red', bold=True))
+
 
 
 
