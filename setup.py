@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 
 
-##TODO: Work on Build
+
 setup(
     name='DnsCryptPiHoleSetup',
     version='0.15',

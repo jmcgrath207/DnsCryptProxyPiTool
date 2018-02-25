@@ -2,13 +2,13 @@
 
 #### Run Commands From the Project Root.
 
+
+
 ### Create Prod Build ####
 
 python3 setup.py bdist_wheel
 sudo rm -R *.egg*
 sudo pip3 install dist/*
-
-
 
 
 # If uploading to Pypi
@@ -23,6 +23,10 @@ twine upload dist/*
 sudo pip3 uninstall -y DnsCryptPiHoleSetup
 python3 setup.py clean --all
 rm dist/*
+
+
+
+
 
 
 ### Create Dev Build ###

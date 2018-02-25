@@ -339,9 +339,7 @@ class FabricCommandClass(object):
             sudo("service dnsmasq restart")
 
 
-            click.echo(click.style('DnsCrypt-Proxy 2 Uninstall is Complete', fg='green', bold=True))
-            click.echo(click.style('The Original PiHole Config has been restored', fg='green', bold=True))
-            click.echo(click.style('The Dnsmasq Service has been restarted', fg='green', bold=True))
+
         else:
            raise click.ClickException(click.style("DnsCrypt-Proxy 2 is not installed. Aborting Uninstall",
                                              fg='red', bold=True))

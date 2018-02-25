@@ -52,7 +52,6 @@ def install(ctx: ClickContextType,dnscryptexractdir: str,dnscryptdownloadlink: s
     Fec.ExecuteCreateDNSCryptProxies(loopbackstartaddress, dnscryptexractdir)
     Fec.ExecuteChangeDnsMasq(dnscryptexractdir)
     Fec.ExecuteFabric3OpenShellMonkeyPatch()
-    click.echo(click.style('DnsCrypt-Proxy 2 located at located at /var/log/dnscrypt-proxy/ ', fg='green', bold=True))
     click.echo(click.style('DnsCrypt-Proxy 2 config located at /etc/dnscrypt-proxy/dnscrypt-proxy.toml ', fg='green',
                            bold=True))
     click.echo(click.style('DnsCrypt-Proxy 2 install is Complete', fg='green', bold=True))
@@ -68,6 +67,9 @@ def install(ctx: ClickContextType,dnscryptexractdir: str,dnscryptdownloadlink: s
 def uninstall(ctx: ClickContextType):
     Fec = ctx.obj['Fabric']
     Fec.ExecuteUninstall()
+    click.echo(click.style('DnsCrypt-Proxy 2 Uninstall is Complete', fg='green', bold=True))
+    click.echo(click.style('The Original PiHole Config has been restored', fg='green', bold=True))
+    click.echo(click.style('The Dnsmasq Service has been restarted', fg='green', bold=True))
     ctx.exit()
 
 
