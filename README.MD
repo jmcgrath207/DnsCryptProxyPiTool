@@ -5,6 +5,10 @@ DnsCryptProxyPiTool is a command line tool to set up [DnsCrypt Proxy 2](https://
 
 This tool is meant to be a all in one solution to manage and build your DNS Crypt Proxy 2.
 
+### Getting Started
+
+[View Getting Started Guide](GET_STARTED.MD)
+
 ## Features
 
 - Installs Dnscrypt Proxy 2 if it doesnt exist.
@@ -23,12 +27,13 @@ This tool is meant to be a all in one solution to manage and build your DNS Cryp
 
 
 
-### Getting Started
 
-[View Getting Started Guide](GET_STARTED.MD)
 
 #### Support OS Types
 - Raspbian GNU/Linux 9 (stretch)
+
+#### Support Device Types
+- Raspberry Pi 3
 
 
 #### Support for 3.2 Pihole only until Bugs are fixed
