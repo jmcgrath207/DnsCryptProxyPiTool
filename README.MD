@@ -10,7 +10,7 @@ This tool is meant to be a all in one solution to manage and build your DNS Cryp
 - Installs Dnscrypt Proxy 2 if it doesnt exist.
 - Builds Socket and Service Files for your DNS Crypt Proxy. 
 - Allow easy editing of the DnsCrypt Proxy 2 Toml File (Default Config).
-- Backs up Original PI Hole Config during Install and restores if Uninstall is executed
+- Backs up your  original PI Hole config during install and restores it if uninstall is executed.
 - Update to the Latest Dnscrypt Proxy 2 easily.
 
 ### Getting Started

@@ -87,21 +87,21 @@ If you see something Like this it is working.
 ![ScreenShot](img/DnsLeakTest.png)
 
 
-# Edit DnsCrypt Proxy 2 Config
+## Edit DnsCrypt Proxy 2 Config
 
 The Dns Crypt Proxy 2 run  by default parameters in a file that be found by showing the path with `dnscrypt-proxy-pi-tool admin -z`.
  
  You can also launch the editor with `dnscrypt-proxy-pi-tool admin -y`
 
 
-# Upgrade
+## Upgrade
 
 Want to upgrade to the Newest DnsCrypt Proxy 2 release? Just do this.
 ##### Note this will restart you DnsMasq Service.
 
 `dnscrypt-proxy-pi-tool admin -q`
 
-# Uninstall
+## Uninstall
 
 Remove Dnscrypt Proxy 2 and Restore Old Pi Hole config.
 
