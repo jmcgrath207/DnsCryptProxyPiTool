@@ -13,6 +13,16 @@ This tool is meant to be a all in one solution to manage and build your DNS Cryp
 - Backs up your  original PI Hole config during install and restores it if uninstall is executed.
 - Update to the Latest Dnscrypt Proxy 2 easily.
 
+
+
+![ScreenShot](img/mainHelpMenu.png)
+
+
+
+![ScreenShot](img/adminHelpMenu.png)
+
+
+
 ### Getting Started
 
 [View Getting Started Guide](GET_STARTED.MD)
