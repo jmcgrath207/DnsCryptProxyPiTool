@@ -1,11 +1,9 @@
 # DnsCryptProxyPiTool
 
 
-DnsCryptPiHoleSetup is a command line tool to set up Dnscrypt Proxies on PiHole for Raspberry Pi 3.
+DnsCryptProxyPiTool is a command line tool to set up [DnsCrypt Proxy 2](https://github.com/jedisct1/dnscrypt-proxy) on PiHole for Raspberry Pi 3.
 
 This tool is meant to be a all in one solution to manage and build your DNS Crypt Proxy 2.
-
-`sudo pip3 install DnsCryptProxyPiTool`
 
 ## Features
 
@@ -19,7 +17,7 @@ This tool is meant to be a all in one solution to manage and build your DNS Cryp
 
 [View Getting Started Guide](GET_STARTED.MD)
 
-#### Support OS Type
+#### Support OS Types
 - Raspbian GNU/Linux 9 (stretch)
 
 
