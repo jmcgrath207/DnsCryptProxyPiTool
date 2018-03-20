@@ -62,7 +62,7 @@ Verbose mode to show the linux commands that are being executed against your ser
 
 Want to override the default config for install?
 
-`dnscrypt-proxy-pi-tool -u 'potato' -p 'salad' install -e '/tmp/something'`
+`dnscrypt-proxy-pi-tool -u 'username' -p 'password' install -e '/tmp/something'`
 
 After that the install is complete
 
