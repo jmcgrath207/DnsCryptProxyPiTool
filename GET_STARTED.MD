@@ -61,6 +61,7 @@ Verbose mode to show the linux commands that are being executed against your ser
 `dnscrypt-proxy-pi-tool -v install`
 
 Want to override the default config for install?
+###### Note: The username and password is your system credentials that have sudo access
 
 `dnscrypt-proxy-pi-tool -u 'username' -p 'password' install -e '/tmp/something'`
 
