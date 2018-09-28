@@ -1,3 +1,6 @@
+# Currently Does not support Version 4 for PIhole  FTLDNS
+
+
 # DnsCryptProxyPiTool
 
 
